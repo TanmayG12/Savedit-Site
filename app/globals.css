@@ -6,11 +6,19 @@
   --radius: 16px;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 html, body {
   @apply bg-bg-light text-text-light dark:bg-bg-dark dark:text-text-dark;
   font-feature-settings: "ss01" on, "liga" on;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+section[id] {
+  scroll-margin-top: 88px;
 }
 
 .container {
@@ -20,8 +28,8 @@ html, body {
 
 /* focus styles */
 :focus-visible {
-  outline: 2px solid #999;
-  outline-offset: 2px;
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
 }
 
 /* subtle grid bg for hero */
