@@ -121,16 +121,14 @@ function Hero() {
 
         {/* Phone screenshot with shadow and elevation */}
         <div className="relative">
-          <div className="mx-auto w-full max-w-[340px]">
-            <Image
-              src="/Screenshots/Hero/Simulator Screenshot - iPhone 16 Pro - 2025-09-14 at 13.04.48-portrait.png"
-              alt="SavedIt app interface showing saved items"
-              width={1080}
-              height={2336}
-              className="h-auto w-full rounded-[36px] shadow-2xl"
-              priority
-            />
-          </div>
+          <Image
+            src="/Screenshots/Hero/Simulator Screenshot - iPhone 16 Pro - 2025-09-14 at 13.04.48-portrait.png"
+            alt="SavedIt app interface showing saved items"
+            width={1080}
+            height={2336}
+            className="mx-auto h-auto w-full max-w-[340px]"
+            priority
+          />
           <div className="pointer-events-none absolute -left-6 -top-6 hidden rotate-[-3deg] md:block">
             <div className="rounded-2xl border border-neutral-200 bg-white px-3 py-1 text-xs font-medium text-neutral-600 shadow-sm dark:border-neutral-800 dark:bg-black dark:text-neutral-300">
               Save from any app
