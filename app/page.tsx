@@ -119,20 +119,17 @@ function Hero() {
           </div>
         </div>
 
-        {/* Phone mock (replace the src with real screenshots when ready) */}
+        {/* Phone screenshot with shadow and elevation */}
         <div className="relative">
-          <div className="mx-auto w-full max-w-[340px] rounded-[36px] border border-neutral-200 bg-neutral-50 p-3 shadow-[0_30px_120px_rgba(0,0,0,0.15)] dark:border-neutral-800 dark:bg-neutral-900">
-            <div className="aspect-[9/19.5] overflow-hidden rounded-[28px] bg-white dark:bg-black">
-              {/* Real app screenshot */}
-              <Image
-                src="/Screenshots/Hero/Simulator Screenshot - iPhone 16 Pro - 2025-09-14 at 13.04.48-portrait.png"
-                alt="SavedIt app interface showing saved items"
-                width={1080}
-                height={2336}
-                className="h-full w-full object-cover"
-                priority
-              />
-            </div>
+          <div className="mx-auto w-full max-w-[340px]">
+            <Image
+              src="/Screenshots/Hero/Simulator Screenshot - iPhone 16 Pro - 2025-09-14 at 13.04.48-portrait.png"
+              alt="SavedIt app interface showing saved items"
+              width={1080}
+              height={2336}
+              className="h-auto w-full rounded-[36px] shadow-[0_30px_120px_rgba(0,0,0,0.15)] dark:shadow-[0_30px_120px_rgba(0,0,0,0.4)]"
+              priority
+            />
           </div>
           <div className="pointer-events-none absolute -left-6 -top-6 hidden rotate-[-3deg] md:block">
             <div className="rounded-2xl border border-neutral-200 bg-white px-3 py-1 text-xs font-medium text-neutral-600 shadow-sm dark:border-neutral-800 dark:bg-black dark:text-neutral-300">
