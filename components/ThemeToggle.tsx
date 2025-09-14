@@ -7,12 +7,22 @@ import { useEffect, useState } from "react";
 export default function ThemeToggle() {
   const { theme, systemTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  
   useEffect(() => setMounted(true), []);
   if (!mounted) return null;
 
   const effective = theme === "system" ? systemTheme : theme;
 
   function fadeTo(color: "light" | "dark") {
+    // Prevent multiple simultaneous animations
+    if (isAnimating) return;
+    setIsAnimating(true);
+
+    // Clean up any existing overlays
+    const existingOverlays = document.querySelectorAll('.theme-fade-overlay');
+    existingOverlays.forEach(overlay => overlay.remove());
+
     // Overlay that will fade away
     const overlay = document.createElement("div");
     overlay.className = "theme-fade-overlay";
@@ -31,7 +41,10 @@ export default function ThemeToggle() {
       requestAnimationFrame(() => {
         if (root) root.classList.remove("is-fading");
         overlay.style.opacity = "0";
-        setTimeout(() => overlay.remove(), 1100); // match CSS duration
+        setTimeout(() => {
+          overlay.remove();
+          setIsAnimating(false);
+        }, 1100); // match CSS duration
       });
     });
   }
