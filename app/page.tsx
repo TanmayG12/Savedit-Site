@@ -123,10 +123,10 @@ function Hero() {
         <div className="relative">
           <div className="mx-auto w-full max-w-[340px] rounded-[36px] border border-neutral-200 bg-neutral-50 p-3 shadow-[0_30px_120px_rgba(0,0,0,0.15)] dark:border-neutral-800 dark:bg-neutral-900">
             <div className="aspect-[9/19.5] overflow-hidden rounded-[28px] bg-white dark:bg-black">
-              {/* Replace these placeholder images with real captures from your app */}
+              {/* Real app screenshot */}
               <Image
-                src="/images/phone-hero.png"
-                alt="SavedIt card UI"
+                src="/Screenshots/Hero/Simulator Screenshot - iPhone 16 Pro - 2025-09-14 at 13.04.48-portrait.png"
+                alt="SavedIt app interface showing saved items"
                 width={1080}
                 height={2336}
                 className="h-full w-full object-cover"
