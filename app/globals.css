@@ -32,6 +32,11 @@ section[id] {
   outline-offset: 3px;
 }
 
+/* Prefer reduced motion = skip peel animation */
+@media (prefers-reduced-motion: reduce) {
+  [data-framer-motion] { transition: none !important; animation: none !important; }
+}
+
 /* subtle grid bg for hero */
 .grid-bg:before {
   content: "";
@@ -51,5 +56,9 @@ section[id] {
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .card-hover:hover {
+    transform: translateY(-1px);
   }
 }

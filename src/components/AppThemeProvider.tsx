@@ -9,7 +9,6 @@ export default function AppThemeProvider({ children }: { children: ReactNode }) 
       attribute="class"
       defaultTheme="system"
       enableSystem
-      disableTransitionOnChange
     >
       {children}
     </ThemeProvider>
