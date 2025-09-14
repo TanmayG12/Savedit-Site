@@ -1,20 +1,18 @@
-import './globals.css'
-import type { Metadata } from 'next'
-import { ThemeProvider } from 'next-themes'
-import { baseMetadata } from '@/lib/seo'
-import { Analytics } from '@vercel/analytics/react'
+import type { Metadata } from "next";
+import "./globals.css";
+import AppThemeProvider from "@/src/components/AppThemeProvider";
 
-export const metadata: Metadata = baseMetadata
+export const metadata: Metadata = {
+  title: "SavedIt",
+  description: "Save anything. Organize. Act.",
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
-          <Analytics />
-        </ThemeProvider>
+        <AppThemeProvider>{children}</AppThemeProvider>
       </body>
     </html>
-  )
+  );
 }
