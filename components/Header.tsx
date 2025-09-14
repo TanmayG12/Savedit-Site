@@ -1,5 +1,6 @@
 // src/components/Header.tsx
 import Link from "next/link";
+import Image from "next/image";
 import ThemeToggle from "./ThemeToggle";
 
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
@@ -20,9 +21,15 @@ export default function Header() {
       <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-4 sm:h-16 sm:px-6 lg:px-8">
         {/* Brand */}
         <Link href="/" className="group inline-flex items-center gap-2">
-          <span className="grid h-7 w-7 place-items-center rounded-full bg-neutral-900 text-white dark:bg-white dark:text-black">
-            S
-          </span>
+          <div className="h-7 w-7 rounded-full overflow-hidden">
+            <Image
+              src="/adaptive-icon.png"
+              alt="SavedIt app icon"
+              width={28}
+              height={28}
+              className="h-full w-full object-cover"
+            />
+          </div>
           <span className="text-sm font-semibold tracking-tight text-neutral-900 group-hover:opacity-90 dark:text-neutral-100">
             SavedIt
           </span>
