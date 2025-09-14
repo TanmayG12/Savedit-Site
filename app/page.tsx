@@ -127,7 +127,7 @@ function Hero() {
               alt="SavedIt app interface showing saved items"
               width={1080}
               height={2336}
-              className="h-auto w-full rounded-[36px] shadow-[0_30px_120px_rgba(0,0,0,0.15)] dark:shadow-[0_30px_120px_rgba(0,0,0,0.4)]"
+              className="h-auto w-full rounded-[36px] shadow-2xl"
               priority
             />
           </div>
