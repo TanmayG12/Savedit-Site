@@ -18,8 +18,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <body>
         <AppThemeProvider>
-          <Header />
-          {children}
+          <div id="app-fade-root">
+            <Header />
+            {children}
+          </div>
         </AppThemeProvider>
       </body>
     </html>

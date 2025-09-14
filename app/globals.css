@@ -32,9 +32,30 @@ section[id] {
   outline-offset: 3px;
 }
 
-/* Prefer reduced motion = skip peel animation */
+/* Theme fade transitions */
+#app-fade-root {
+  transition: opacity 900ms cubic-bezier(.4,0,.2,1);
+  opacity: 1;
+}
+#app-fade-root.is-fading {
+  opacity: 0;
+}
+
+.theme-fade-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  pointer-events: none;
+  transition: opacity 1000ms cubic-bezier(.4,0,.2,1);
+  opacity: 1;
+}
+
+/* Prefer reduced motion = skip animations */
 @media (prefers-reduced-motion: reduce) {
   [data-framer-motion] { transition: none !important; animation: none !important; }
+  #app-fade-root, .theme-fade-overlay {
+    transition: none !important;
+  }
 }
 
 /* subtle grid bg for hero */
