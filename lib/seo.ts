@@ -21,5 +21,5 @@ export const baseMetadata: Metadata = {
     description,
     images: ['/api/og']
   },
-  icons: { icon: '/favicon.svg' }
+  icons: { icon: '/favicon.png' }
 }
