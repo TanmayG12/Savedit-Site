@@ -156,7 +156,7 @@ function Today() {
               alt="Share to SavedIt"
               width={1200}
               height={900}
-              className="rounded-2xl border border-neutral-200 dark:border-neutral-800"
+              className="rounded-2xl shadow-2xl"
             />
           </Card>
 
@@ -166,7 +166,7 @@ function Today() {
               alt="Saved card"
               width={1200}
               height={900}
-              className="rounded-2xl border border-neutral-200 dark:border-neutral-800"
+              className="rounded-2xl shadow-2xl"
             />
           </Card>
 
@@ -176,7 +176,7 @@ function Today() {
               alt="Collections"
               width={1200}
               height={900}
-              className="rounded-2xl border border-neutral-200 dark:border-neutral-800"
+              className="rounded-2xl shadow-2xl"
             />
           </Card>
 
@@ -186,7 +186,7 @@ function Today() {
               alt="Tags and notes interface"
               width={1200}
               height={900}
-              className="rounded-2xl border border-neutral-200 dark:border-neutral-800"
+              className="rounded-2xl shadow-2xl"
             />
           </Card>
         </div>
@@ -260,15 +260,13 @@ function About() {
               offline or online, authenticated or not — because reliability shouldn’t be a feature you pay extra for.
             </p>
           </div>
-          <div className="rounded-3xl border border-neutral-200 bg-white/70 p-5 shadow-[0_2px_30px_rgba(0,0,0,0.05)] dark:border-neutral-800 dark:bg-black/30">
-            <Image
-              src="/Screenshots/Features/whysaveditexists.png"
-              alt="Why SavedIt exists - showing scattered saves vs organized saves"
-              width={1600}
-              height={1200}
-              className="rounded-2xl border border-neutral-200 dark:border-neutral-800"
-            />
-          </div>
+          <Image
+            src="/Screenshots/Features/whysaveditexists.png"
+            alt="Why SavedIt exists - showing scattered saves vs organized saves"
+            width={1080}
+            height={2336}
+            className="mx-auto h-auto w-full max-w-[340px] rounded-[36px] shadow-2xl"
+          />
         </div>
       </Container>
     </section>
