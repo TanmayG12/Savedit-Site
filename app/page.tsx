@@ -247,49 +247,49 @@ function Today() {
         />
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           <Card title="Save from anywhere" desc="Use the system share sheet from Instagram, TikTok, YouTube, or the web.">
-            <div className="flex justify-center">
+            <div className="flex justify-center items-center">
               <Image
                 src="/Screenshots/Features/save-interface.png"
                 alt="Share to SavedIt"
                 width={1200}
                 height={900}
-                className="h-112 w-auto rounded-2xl object-cover shadow-2xl"
+                className="h-128 w-auto rounded-2xl object-cover shadow-2xl"
               />
             </div>
           </Card>
 
           <Card title="Beautiful cards" desc="Auto thumbnails and titles. Add notes. Add tags. Search later.">
-            <div className="flex justify-center">
+            <div className="flex justify-center items-center">
               <Image
                 src="/Screenshots/Features/Cards.png"
                 alt="Saved card"
                 width={1200}
                 height={900}
-                className="h-112 w-auto rounded-2xl object-cover shadow-2xl"
+                className="h-128 w-auto rounded-2xl object-cover shadow-2xl"
               />
             </div>
           </Card>
 
           <Card title="Collections" desc="Group similar saves — restaurants, trips, learning, wishlist — however you think.">
-            <div className="flex justify-center">
+            <div className="flex justify-center items-center">
               <Image
                 src="/Screenshots/Features/Collections.png"
                 alt="Collections"
                 width={1200}
                 height={900}
-                className="h-112 w-auto rounded-2xl object-cover shadow-2xl"
+                className="h-128 w-auto rounded-2xl object-cover shadow-2xl"
               />
             </div>
           </Card>
 
           <Card title="Tags & Notes" desc="Add personal notes and tags to any save. Find exactly what you're looking for later.">
-            <div className="flex justify-center">
+            <div className="flex justify-center items-center">
               <Image
                 src="/Screenshots/Features/notesandtags.png"
                 alt="Tags and notes interface"
                 width={1200}
                 height={900}
-                className="h-112 w-auto rounded-2xl object-cover shadow-2xl"
+                className="h-128 w-auto rounded-2xl object-cover shadow-2xl"
               />
             </div>
           </Card>
