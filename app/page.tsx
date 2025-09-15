@@ -134,7 +134,7 @@ function RotatingBenefits({
   return (
     <div
       aria-live="polite"
-      className={`mt-3 flex items-center text-base text-neutral-700 transition-opacity duration-300 dark:text-neutral-200 ${fading ? "opacity-0" : "opacity-100"}`}
+      className={`mt-3 flex h-6 items-center text-base text-neutral-700 transition-opacity duration-300 dark:text-neutral-200 ${fading ? "opacity-0" : "opacity-100"}`}
     >
       <span className="truncate">{typed}</span>
       {/* caret */}
@@ -225,7 +225,7 @@ function Hero() {
             alt="SavedIt app interface showing saved items"
             width={1080}
             height={2336}
-            className="mx-auto h-auto w-full max-w-[400px]"
+            className="mx-auto h-auto w-full max-w-[360px]"
             priority
           />
           {/* soft glow under phone */}
@@ -253,7 +253,7 @@ function Today() {
                 alt="Share to SavedIt"
                 width={1200}
                 height={900}
-                className="h-80 w-auto rounded-2xl object-cover shadow-2xl"
+                className="h-112 w-auto rounded-2xl object-cover shadow-2xl"
               />
             </div>
           </Card>
@@ -265,7 +265,7 @@ function Today() {
                 alt="Saved card"
                 width={1200}
                 height={900}
-                className="h-80 w-auto rounded-2xl object-cover shadow-2xl"
+                className="h-112 w-auto rounded-2xl object-cover shadow-2xl"
               />
             </div>
           </Card>
@@ -277,7 +277,7 @@ function Today() {
                 alt="Collections"
                 width={1200}
                 height={900}
-                className="h-80 w-auto rounded-2xl object-cover shadow-2xl"
+                className="h-112 w-auto rounded-2xl object-cover shadow-2xl"
               />
             </div>
           </Card>
@@ -289,7 +289,7 @@ function Today() {
                 alt="Tags and notes interface"
                 width={1200}
                 height={900}
-                className="h-80 w-auto rounded-2xl object-cover shadow-2xl"
+                className="h-112 w-auto rounded-2xl object-cover shadow-2xl"
               />
             </div>
           </Card>
@@ -369,7 +369,7 @@ function About() {
             alt="Why SavedIt exists - showing scattered saves vs organized saves"
             width={1080}
             height={2336}
-            className="mx-auto h-auto w-full max-w-[400px]"
+            className="mx-auto h-auto w-full max-w-[360px]"
           />
         </div>
       </Container>
