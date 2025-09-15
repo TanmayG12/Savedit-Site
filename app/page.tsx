@@ -265,7 +265,7 @@ function About() {
             alt="Why SavedIt exists - showing scattered saves vs organized saves"
             width={1080}
             height={2336}
-            className="mx-auto h-auto w-full max-w-[340px] rounded-[36px] shadow-2xl"
+            className="mx-auto h-auto w-full max-w-[340px]"
           />
         </div>
       </Container>
