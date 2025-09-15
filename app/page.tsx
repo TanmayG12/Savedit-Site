@@ -312,14 +312,12 @@ function Hero() {
               Get Android
             </CTAButton>
             <Pill>Early access</Pill>
-            <Pill>Private by design</Pill>
           </div>
         </div>
 
         <ParallaxPhone
           src="/Screenshots/Hero/Simulator Screenshot - iPhone 16 Pro - 2025-09-14 at 13.04.48-portrait.png"
           alt="SavedIt app interface showing saved items"
-          label="Save from any app"
         />
       </Container>
     </section>
@@ -335,10 +333,12 @@ function TrustRow() {
           {/* avatars */}
           <div className="flex -space-x-2">
             {[1, 2, 3, 4].map((i) => (
-              <span
+              <div
                 key={i}
-                className="inline-block h-7 w-7 rounded-full border border-white bg-neutral-200 dark:border-black dark:bg-neutral-800"
-              />
+                className="inline-flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-gradient-to-br from-neutral-200 to-neutral-300 text-xs font-medium text-neutral-600 dark:border-black dark:from-neutral-700 dark:to-neutral-800 dark:text-neutral-300"
+              >
+                {String.fromCharCode(64 + i)}
+              </div>
             ))}
           </div>
           <span>Loved by early users</span>
