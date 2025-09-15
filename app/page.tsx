@@ -29,14 +29,7 @@ function CTAButton({
 }) {
   const base =
     "inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2";
-  return secondary ? (
-    <Link
-      className={`${base} border border-neutral-200 text-neutral-900 hover:bg-neutral-50 dark:border-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-900/60`}
-      href={href}
-    >
-      {children}
-    </Link>
-  ) : (
+  return (
     <Link
       className={`${base} bg-neutral-900 text-white hover:bg-black dark:bg-white dark:text-black dark:hover:bg-neutral-200`}
       href={href}
@@ -141,7 +134,7 @@ function RotatingBenefits({
   return (
     <div
       aria-live="polite"
-      className={`mt-3 flex items-center text-base text-neutral-500 transition-opacity duration-300 dark:text-neutral-400 ${fading ? "opacity-0" : "opacity-100"}`}
+      className={`mt-3 flex items-center text-base text-neutral-700 transition-opacity duration-300 dark:text-neutral-200 ${fading ? "opacity-0" : "opacity-100"}`}
     >
       <span className="truncate">{typed}</span>
       {/* caret */}
@@ -232,15 +225,9 @@ function Hero() {
             alt="SavedIt app interface showing saved items"
             width={1080}
             height={2336}
-            className="mx-auto h-auto w-full max-w-[340px]"
+            className="mx-auto h-auto w-full max-w-[400px]"
             priority
           />
-          {/* floating label */}
-          <div className="pointer-events-none absolute -left-6 -top-6 hidden rotate-[-3deg] md:block">
-            <div className="rounded-2xl border border-neutral-200 bg-white px-3 py-1 text-xs font-medium text-neutral-600 shadow-sm dark:border-neutral-800 dark:bg-black dark:text-neutral-300">
-              Save from any app
-            </div>
-          </div>
           {/* soft glow under phone */}
           <div className="pointer-events-none absolute left-1/2 top-full -z-10 mt-6 h-12 w-[65%] -translate-x-1/2 rounded-full bg-neutral-900/10 blur-2xl dark:bg-white/10" />
         </div>
@@ -266,7 +253,7 @@ function Today() {
                 alt="Share to SavedIt"
                 width={1200}
                 height={900}
-                className="h-64 w-auto rounded-2xl object-cover shadow-2xl"
+                className="h-80 w-auto rounded-2xl object-cover shadow-2xl"
               />
             </div>
           </Card>
@@ -278,7 +265,7 @@ function Today() {
                 alt="Saved card"
                 width={1200}
                 height={900}
-                className="h-64 w-auto rounded-2xl object-cover shadow-2xl"
+                className="h-80 w-auto rounded-2xl object-cover shadow-2xl"
               />
             </div>
           </Card>
@@ -290,7 +277,7 @@ function Today() {
                 alt="Collections"
                 width={1200}
                 height={900}
-                className="h-64 w-auto rounded-2xl object-cover shadow-2xl"
+                className="h-80 w-auto rounded-2xl object-cover shadow-2xl"
               />
             </div>
           </Card>
@@ -302,7 +289,7 @@ function Today() {
                 alt="Tags and notes interface"
                 width={1200}
                 height={900}
-                className="h-64 w-auto rounded-2xl object-cover shadow-2xl"
+                className="h-80 w-auto rounded-2xl object-cover shadow-2xl"
               />
             </div>
           </Card>
@@ -382,7 +369,7 @@ function About() {
             alt="Why SavedIt exists - showing scattered saves vs organized saves"
             width={1080}
             height={2336}
-            className="mx-auto h-auto w-full max-w-[340px]"
+            className="mx-auto h-auto w-full max-w-[400px]"
           />
         </div>
       </Container>
