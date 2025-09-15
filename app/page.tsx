@@ -78,142 +78,42 @@ function Card({
   );
 }
 
-/* ---------------- DeviceFrame: consistent screenshot sizing --------------- */
-function DeviceFrame({
-  src,
-  alt,
-  priority,
-}: {
-  src: string;
-  alt: string;
-  priority?: boolean;
-}) {
-  // Fixed container aspect with responsive height; image fills consistently.
-  return (
-    <div className="relative mx-auto w-full max-w-[330px]">
-      {/* simple bezel */}
-      <div className="rounded-[38px] border border-neutral-200 bg-neutral-50 p-2 shadow-xl dark:border-neutral-800 dark:bg-neutral-900">
-        <div className="overflow-hidden rounded-[30px]">
-          <Image
-            src={src}
-            alt={alt}
-            width={1080}
-            height={2336}
-            priority={priority}
-            className="block h-[520px] w-full object-cover sm:h-[560px] lg:h-[600px]"
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ---------------- ParallaxPhone (no deps, reduced-motion safe) ------------ */
-function ParallaxPhone({
-  src,
-  alt,
-  label,
-}: {
-  src: string;
-  alt: string;
-  label?: string;
-}) {
-  const wrapRef = useRef<HTMLDivElement | null>(null);
-  const [reduced, setReduced] = useState(false);
-
-  useEffect(() => {
-    try {
-      const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-      setReduced(mq.matches);
-      const onChange = () => setReduced(mq.matches);
-      mq.addEventListener?.("change", onChange);
-      return () => mq.removeEventListener?.("change", onChange);
-    } catch {}
-  }, []);
-
-  useEffect(() => {
-    if (reduced) return;
-    const el = wrapRef.current;
-    if (!el) return;
-
-    const onMove = (e: MouseEvent) => {
-      const r = el.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width - 0.5;  // -0.5..0.5
-      const y = (e.clientY - r.top) / r.height - 0.5;
-      const rotateX = (-y * 6).toFixed(2);
-      const rotateY = (x * 6).toFixed(2);
-      el.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(0)`;
-    };
-    const reset = () => (el.style.transform = "perspective(1000px) rotateX(0) rotateY(0)");
-    el.addEventListener("mousemove", onMove);
-    el.addEventListener("mouseleave", reset);
-    return () => {
-      el.removeEventListener("mousemove", onMove);
-      el.removeEventListener("mouseleave", reset);
-    };
-  }, [reduced]);
-
-  return (
-    <div className="relative">
-      {/* background depth */}
-      <div className="pointer-events-none absolute -inset-24 -z-10">
-        <div className="absolute left-1/2 top-1/4 h-72 w-72 -translate-x-1/2 rounded-full bg-gradient-to-tr from-neutral-200/50 to-transparent blur-3xl dark:from-white/5" />
-      </div>
-
-      <div
-        ref={wrapRef}
-        className="transition-transform duration-300 will-change-transform"
-        style={{ transform: "perspective(1000px)" }}
-      >
-        <DeviceFrame src={src} alt={alt} priority />
-      </div>
-
-      {/* floating label */}
-      {label ? (
-        <div className="pointer-events-none absolute -left-6 -top-6 hidden rotate-[-3deg] md:block">
-          <div className="rounded-2xl border border-neutral-200 bg-white px-3 py-1 text-xs font-medium text-neutral-600 shadow-sm dark:border-neutral-800 dark:bg-black dark:text-neutral-300">
-            {label}
-          </div>
-        </div>
-      ) : null}
-
-      {/* soft ground shadow */}
-      <div className="pointer-events-none absolute left-1/2 top-full -z-10 mt-6 h-12 w-[65%] -translate-x-1/2 rounded-full bg-neutral-900/10 blur-2xl dark:bg-white/10" />
-    </div>
-  );
-}
-
 /* ---------------- Rotating, type-in benefit line (no deps) ---------------- */
 function RotatingBenefits({
   lines,
-  typeSpeed = 22,
-  holdMs = 1200,
-  fadeMs = 350,
+  typeSpeed = 22,      // ms per char
+  holdMs = 1200,       // pause when fully typed
+  fadeMs = 350,        // fade-out duration
 }: {
   lines: string[];
   typeSpeed?: number;
   holdMs?: number;
   fadeMs?: number;
 }) {
-  const [i, setI] = useState(0);
-  const [typed, setTyped] = useState("");
+  const [i, setI] = useState(0);          // which line
+  const [typed, setTyped] = useState(""); // visible substring
   const [fading, setFading] = useState(false);
   const [reduced, setReduced] = useState(false);
+  const mounted = useRef(false);
 
   const line = useMemo(() => lines[i % lines.length], [i, lines]);
 
   useEffect(() => {
+    mounted.current = true;
     try {
       const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
       setReduced(mq.matches);
       const onChange = () => setReduced(mq.matches);
       mq.addEventListener?.("change", onChange);
       return () => mq.removeEventListener?.("change", onChange);
-    } catch {}
+    } catch {
+      // SSR or older browsers: ignore
+    }
   }, []);
 
   useEffect(() => {
     if (reduced) {
+      // No typing; simple rotate every 1.6s
       setTyped(line);
       const t = setTimeout(() => setI((v) => (v + 1) % lines.length), 1600);
       return () => clearTimeout(t);
@@ -223,6 +123,7 @@ function RotatingBenefits({
     if (typed.length < line.length) {
       t = setTimeout(() => setTyped(line.slice(0, typed.length + 1)), typeSpeed);
     } else {
+      // fully typed → hold → fade → next
       const hold = setTimeout(() => {
         setFading(true);
         const afterFade = setTimeout(() => {
@@ -240,10 +141,13 @@ function RotatingBenefits({
   return (
     <div
       aria-live="polite"
-      className={`mt-3 flex items-center text-base text-neutral-900 transition-opacity duration-300 dark:text-white ${fading ? "opacity-0" : "opacity-100"}`}
+      className={`mt-3 flex items-center text-base text-neutral-500 transition-opacity duration-300 dark:text-neutral-400 ${fading ? "opacity-0" : "opacity-100"}`}
     >
       <span className="truncate">{typed}</span>
-      {!reduced && <span className="ml-1 inline-block h-5 w-[2px] animate-pulse bg-current" />}
+      {/* caret */}
+      {!reduced && (
+        <span className="ml-1 inline-block h-5 w-[2px] animate-pulse bg-current" />
+      )}
     </div>
   );
 }
@@ -254,7 +158,6 @@ export default function HomePage() {
     <main>
       {/* Smooth anchor jump offset handled in globals.css (scroll-margin-top). */}
       <Hero />
-      <TrustRow />
       <Divider />
       <Today />
       <Divider subtle />
@@ -277,33 +180,40 @@ function Hero() {
     "Add tags and notes that you’ll actually find later.",
     "Collections for trips, recipes, workouts, learning.",
     "Blazing-fast search across everything you saved.",
+    "Works even without an account.",
     "Offline-first. Your saves don’t disappear.",
     "Private by design. No selling. No snooping.",
+    "Import your existing saves easily.",
+    "One tap to jump back to the original app.",
+    "Instagram and TikTok friendly — share sheet native.",
+    "Quick add notes while saving (no extra screens).",
+    "Suggested tags that learn how you organize.",
     "Smart dedupe for repeated links.",
     "Create shared collections with friends (coming).",
     "Turn restaurants into plans with reminders (next).",
+    "Track product prices from your wishlist (next).",
     "Map view for places you’ve saved (next).",
+    "Keyboard-friendly on desktop; buttery on mobile.",
+    "Beautiful cards that make your memory feel organized.",
     "Export anytime. Your data is yours.",
+    "Fast, reliable, and respectful of your time.",
     "Save once. Find forever.",
   ];
 
   return (
-    <section id="home" className="relative overflow-hidden pt-20 sm:pt-24 md:pt-28 lg:pt-32">
-      {/* gentle radial field for depth */}
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute inset-x-0 top-[-20%] h-[60%] bg-gradient-to-b from-neutral-100 to-transparent dark:from-white/5" />
-      </div>
-
+    <section id="home" className="pt-20 sm:pt-24 md:pt-28 lg:pt-32">
       <Container className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2">
         <div>
           <h1 className="text-5xl font-semibold leading-tight tracking-tight text-neutral-900 dark:text-neutral-100">
             One place for all your saves.
           </h1>
+
           <p className="mt-4 max-w-xl text-lg text-neutral-600 dark:text-neutral-400">
             Save links, reels, and videos from Instagram, TikTok, YouTube—or any app. Turn them into beautiful cards,
             add notes and tags, and keep them together in collections. That’s it: simple, fast, reliable.
           </p>
 
+          {/* Rotating benefit line */}
           <RotatingBenefits lines={benefits} />
 
           <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -315,40 +225,24 @@ function Hero() {
           </div>
         </div>
 
-        <ParallaxPhone
-          src="/Screenshots/Hero/Simulator Screenshot - iPhone 16 Pro - 2025-09-14 at 13.04.48-portrait.png"
-          alt="SavedIt app interface showing saved items"
-        />
-      </Container>
-    </section>
-  );
-}
-
-/* -------------------- Trust Row just under hero ------------------------- */
-function TrustRow() {
-  return (
-    <section className="pt-6">
-      <Container>
-        <div className="flex flex-wrap items-center gap-4 text-sm text-neutral-500 dark:text-neutral-400">
-          {/* avatars */}
-          <div className="flex -space-x-2">
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="inline-flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-gradient-to-br from-neutral-200 to-neutral-300 text-xs font-medium text-neutral-600 dark:border-black dark:from-neutral-700 dark:to-neutral-800 dark:text-neutral-300"
-              >
-                {String.fromCharCode(64 + i)}
-              </div>
-            ))}
+        {/* Phone screenshot with shadow and elevation */}
+        <div className="relative">
+          <Image
+            src="/Screenshots/Hero/Simulator Screenshot - iPhone 16 Pro - 2025-09-14 at 13.04.48-portrait.png"
+            alt="SavedIt app interface showing saved items"
+            width={1080}
+            height={2336}
+            className="mx-auto h-auto w-full max-w-[340px]"
+            priority
+          />
+          {/* floating label */}
+          <div className="pointer-events-none absolute -left-6 -top-6 hidden rotate-[-3deg] md:block">
+            <div className="rounded-2xl border border-neutral-200 bg-white px-3 py-1 text-xs font-medium text-neutral-600 shadow-sm dark:border-neutral-800 dark:bg-black dark:text-neutral-300">
+              Save from any app
+            </div>
           </div>
-          <span>Loved by early users</span>
-          <span className="mx-2 h-1 w-1 rounded-full bg-neutral-300 dark:bg-neutral-700" />
-          <span className="rounded-full border border-neutral-200 px-2 py-0.5 text-xs dark:border-neutral-800">
-            Private by design
-          </span>
-          <span className="rounded-full border border-neutral-200 px-2 py-0.5 text-xs dark:border-neutral-800">
-            Export anytime
-          </span>
+          {/* soft glow under phone */}
+          <div className="pointer-events-none absolute left-1/2 top-full -z-10 mt-6 h-12 w-[65%] -translate-x-1/2 rounded-full bg-neutral-900/10 blur-2xl dark:bg-white/10" />
         </div>
       </Container>
     </section>
