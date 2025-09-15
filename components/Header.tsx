@@ -21,12 +21,12 @@ export default function Header() {
       <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-4 sm:h-16 sm:px-6 lg:px-8">
         {/* Brand */}
         <Link href="/" className="group inline-flex items-center gap-2">
-          <div className="h-9 w-9 rounded-full overflow-hidden">
+          <div className="h-12 w-12 rounded-full overflow-hidden">
             <Image
               src="/adaptive-icon.png"
               alt="SavedIt app icon"
-              width={36}
-              height={36}
+              width={48}
+              height={48}
               className="h-full w-full object-cover"
             />
           </div>

@@ -7,12 +7,9 @@ export const metadata: Metadata = {
   title: "SavedIt",
   description: "One place for all your saves.",
   icons: {
-    icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/favicon.png", type: "image/png", sizes: "32x32" },
-    ],
+    icon: "/adaptive-icon.png",
     apple: "/adaptive-icon.png",
-    shortcut: "/favicon.png",
+    shortcut: "/adaptive-icon.png",
   },
   openGraph: {
     title: "SavedIt",
