@@ -149,10 +149,10 @@ function Today() {
           title="What you can do right now"
           kicker="SavedIt is your cross-app save box. Save from anywhere, organize with tags and collections, and come back when you need it."
         />
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           <Card title="Save from anywhere" desc="Use the system share sheet from Instagram, TikTok, YouTube, or the web.">
             <Image
-              src="/images/share-sheet.png"
+              src="/Screenshots/Features/Save-interface.jpg"
               alt="Share to SavedIt"
               width={1200}
               height={900}
@@ -162,7 +162,7 @@ function Today() {
 
           <Card title="Beautiful cards" desc="Auto thumbnails and titles. Add notes. Add tags. Search later.">
             <Image
-              src="/images/card.png"
+              src="/Screenshots/Features/Beautiful Cards.jpg"
               alt="Saved card"
               width={1200}
               height={900}
@@ -172,8 +172,18 @@ function Today() {
 
           <Card title="Collections" desc="Group similar saves — restaurants, trips, learning, wishlist — however you think.">
             <Image
-              src="/images/collection.png"
+              src="/Screenshots/Features/Collections.jpg"
               alt="Collections"
+              width={1200}
+              height={900}
+              className="rounded-2xl border border-neutral-200 dark:border-neutral-800"
+            />
+          </Card>
+
+          <Card title="Tags & Notes" desc="Add personal notes and tags to any save. Find exactly what you're looking for later.">
+            <Image
+              src="/Screenshots/Features/Tagsandnotes.jpg"
+              alt="Tags and notes interface"
               width={1200}
               height={900}
               className="rounded-2xl border border-neutral-200 dark:border-neutral-800"
@@ -252,8 +262,8 @@ function About() {
           </div>
           <div className="rounded-3xl border border-neutral-200 bg-white/70 p-5 shadow-[0_2px_30px_rgba(0,0,0,0.05)] dark:border-neutral-800 dark:bg-black/30">
             <Image
-              src="/images/grid-cards.png"
-              alt="SavedIt cards grid"
+              src="/Screenshots/Features/whysaveditexists.png"
+              alt="Why SavedIt exists - showing scattered saves vs organized saves"
               width={1600}
               height={1200}
               className="rounded-2xl border border-neutral-200 dark:border-neutral-800"
