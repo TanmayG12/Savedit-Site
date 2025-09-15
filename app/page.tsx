@@ -240,7 +240,7 @@ function RotatingBenefits({
   return (
     <div
       aria-live="polite"
-      className={`mt-3 flex items-center text-base text-neutral-500 transition-opacity duration-300 dark:text-neutral-400 ${fading ? "opacity-0" : "opacity-100"}`}
+      className={`mt-3 flex items-center text-base text-neutral-900 transition-opacity duration-300 dark:text-white ${fading ? "opacity-0" : "opacity-100"}`}
     >
       <span className="truncate">{typed}</span>
       {!reduced && <span className="ml-1 inline-block h-5 w-[2px] animate-pulse bg-current" />}
@@ -277,7 +277,6 @@ function Hero() {
     "Add tags and notes that you’ll actually find later.",
     "Collections for trips, recipes, workouts, learning.",
     "Blazing-fast search across everything you saved.",
-    "Works even without an account.",
     "Offline-first. Your saves don’t disappear.",
     "Private by design. No selling. No snooping.",
     "Smart dedupe for repeated links.",
@@ -367,19 +366,51 @@ function Today() {
         />
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           <Card title="Save from anywhere" desc="Use the system share sheet from Instagram, TikTok, YouTube, or the web.">
-            <DeviceFrame src="/Screenshots/Features/save-interface.png" alt="Share to SavedIt" />
+            <div className="flex justify-center">
+              <Image
+                src="/Screenshots/Features/save-interface.png"
+                alt="Share to SavedIt"
+                width={1200}
+                height={900}
+                className="h-64 w-auto rounded-2xl object-cover shadow-2xl"
+              />
+            </div>
           </Card>
 
           <Card title="Beautiful cards" desc="Auto thumbnails and titles. Add notes. Add tags. Search later.">
-            <DeviceFrame src="/Screenshots/Features/Cards.png" alt="Saved cards" />
+            <div className="flex justify-center">
+              <Image
+                src="/Screenshots/Features/Cards.png"
+                alt="Saved card"
+                width={1200}
+                height={900}
+                className="h-64 w-auto rounded-2xl object-cover shadow-2xl"
+              />
+            </div>
           </Card>
 
           <Card title="Collections" desc="Group similar saves — restaurants, trips, learning, wishlist — however you think.">
-            <DeviceFrame src="/Screenshots/Features/Collections.png" alt="Collections" />
+            <div className="flex justify-center">
+              <Image
+                src="/Screenshots/Features/Collections.png"
+                alt="Collections"
+                width={1200}
+                height={900}
+                className="h-64 w-auto rounded-2xl object-cover shadow-2xl"
+              />
+            </div>
           </Card>
 
           <Card title="Tags & Notes" desc="Add personal notes and tags to any save. Find exactly what you're looking for later.">
-            <DeviceFrame src="/Screenshots/Features/notesandtags.png" alt="Tags and notes interface" />
+            <div className="flex justify-center">
+              <Image
+                src="/Screenshots/Features/notesandtags.png"
+                alt="Tags and notes interface"
+                width={1200}
+                height={900}
+                className="h-64 w-auto rounded-2xl object-cover shadow-2xl"
+              />
+            </div>
           </Card>
         </div>
       </Container>
@@ -452,9 +483,12 @@ function About() {
               offline or online, authenticated or not — because reliability shouldn’t be a feature you pay extra for.
             </p>
           </div>
-          <DeviceFrame 
-            src="/Screenshots/Features/whysaveditexists.png" 
-            alt="Why SavedIt exists - showing scattered saves vs organized saves" 
+          <Image
+            src="/Screenshots/Features/whysaveditexists.png"
+            alt="Why SavedIt exists - showing scattered saves vs organized saves"
+            width={1080}
+            height={2336}
+            className="mx-auto h-auto w-full max-w-[340px]"
           />
         </div>
       </Container>
