@@ -4,146 +4,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-
-// ---- Small UI primitives (kept local to the page for easy copy/paste) ----
-function Container({ className = "", children }: { className?: string; children: React.ReactNode }) {
-  return <div className={`mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 ${className}`}>{children}</div>;
-}
-
-function Pill({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex items-center rounded-full border border-neutral-200 px-3 py-1 text-sm text-neutral-600 shadow-sm dark:border-neutral-800 dark:text-neutral-300">
-      {children}
-    </span>
-  );
-}
-
-function CTAButton({
-  href,
-  children,
-  secondary,
-}: {
-  href: string;
-  children: React.ReactNode;
-  secondary?: boolean;
-}) {
-  const base =
-    "inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2";
-  return (
-    <Link
-      className={`${base} bg-neutral-900 text-white hover:bg-black dark:bg-white dark:text-black dark:hover:bg-neutral-200`}
-      href={href}
-    >
-      {children}
-    </Link>
-  );
-}
-
-function SectionTitle({ eyebrow, title, kicker }: { eyebrow?: string; title: string; kicker?: string }) {
-  return (
-    <div className="mb-8">
-      {eyebrow ? (
-        <div className="mb-2 text-xs uppercase tracking-widest text-neutral-400 dark:text-neutral-500">{eyebrow}</div>
-      ) : null}
-      <h2 className="text-3xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">{title}</h2>
-      {kicker ? (
-        <p className="mt-3 max-w-3xl text-neutral-600 dark:text-neutral-400">{kicker}</p>
-      ) : null}
-    </div>
-  );
-}
-
-function Card({
-  title,
-  desc,
-  children,
-}: {
-  title?: string;
-  desc?: string;
-  children?: React.ReactNode;
-}) {
-  return (
-    <div className="rounded-3xl border border-neutral-200 bg-white/70 p-5 shadow-[0_2px_30px_rgba(0,0,0,0.05)] backdrop-blur dark:border-neutral-800 dark:bg-black/30">
-      {title ? <div className="mb-1 text-sm font-medium text-neutral-900 dark:text-neutral-100">{title}</div> : null}
-      {desc ? <div className="mb-4 text-sm text-neutral-500 dark:text-neutral-400">{desc}</div> : null}
-      {children}
-    </div>
-  );
-}
-
-/* ---------------- Rotating, type-in benefit line (no deps) ---------------- */
-function RotatingBenefits({
-  lines,
-  typeSpeed = 22,      // ms per char
-  holdMs = 1200,       // pause when fully typed
-  fadeMs = 350,        // fade-out duration
-}: {
-  lines: string[];
-  typeSpeed?: number;
-  holdMs?: number;
-  fadeMs?: number;
-}) {
-  const [i, setI] = useState(0);          // which line
-  const [typed, setTyped] = useState(""); // visible substring
-  const [fading, setFading] = useState(false);
-  const [reduced, setReduced] = useState(false);
-  const mounted = useRef(false);
-
-  const line = useMemo(() => lines[i % lines.length], [i, lines]);
-
-  useEffect(() => {
-    mounted.current = true;
-    try {
-      const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-      setReduced(mq.matches);
-      const onChange = () => setReduced(mq.matches);
-      mq.addEventListener?.("change", onChange);
-      return () => mq.removeEventListener?.("change", onChange);
-    } catch {
-      // SSR or older browsers: ignore
-    }
-  }, []);
-
-  useEffect(() => {
-    if (reduced) {
-      // No typing; simple rotate every 1.6s
-      setTyped(line);
-      const t = setTimeout(() => setI((v) => (v + 1) % lines.length), 1600);
-      return () => clearTimeout(t);
-    }
-
-    let t: ReturnType<typeof setTimeout> | undefined;
-    if (typed.length < line.length) {
-      t = setTimeout(() => setTyped(line.slice(0, typed.length + 1)), typeSpeed);
-    } else {
-      // fully typed → hold → fade → next
-      const hold = setTimeout(() => {
-        setFading(true);
-        const afterFade = setTimeout(() => {
-          setFading(false);
-          setTyped("");
-          setI((v) => (v + 1) % lines.length);
-        }, fadeMs);
-        t = afterFade as unknown as ReturnType<typeof setTimeout>;
-      }, holdMs);
-      t = hold;
-    }
-    return () => t && clearTimeout(t);
-  }, [typed, line, lines.length, typeSpeed, holdMs, fadeMs, reduced]);
-
-  return (
-    <div
-      aria-live="polite"
-      className={`mt-3 flex h-6 items-center text-base text-neutral-700 transition-opacity duration-300 dark:text-neutral-200 ${fading ? "opacity-0" : "opacity-100"}`}
-    >
-      <span className="truncate">{typed}</span>
-      {/* caret */}
-      {!reduced && (
-        <span className="ml-1 inline-block h-5 w-[2px] animate-pulse bg-current" />
-      )}
-    </div>
-  );
-}
+import { Container } from "@/src/components/ui/Container";
+import { Pill } from "@/src/components/ui/Pill";
+import { CTAButton } from "@/src/components/ui/CTAButton";
+import { SectionTitle } from "@/src/components/ui/SectionTitle";
+import { Card } from "@/src/components/ui/Card";
+import { RotatingBenefits } from "@/src/components/ui/RotatingBenefits";
+import { Divider } from "@/src/components/ui/Divider";
 
 // ---- Page ----
 export default function HomePage() {
@@ -211,7 +78,7 @@ function Hero() {
 
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <CTAButton href="/ios">Get iOS</CTAButton>
-            <CTAButton href="/android" secondary>
+            <CTAButton href="/android">
               Get Android
             </CTAButton>
             <Pill>Early access</Pill>
@@ -393,7 +260,7 @@ function FinalCTA() {
             </div>
             <div className="flex gap-3 sm:justify-end">
               <CTAButton href="/ios">Get iOS</CTAButton>
-              <CTAButton href="/android" secondary>
+              <CTAButton href="/android">
                 Get Android
               </CTAButton>
             </div>
@@ -410,13 +277,5 @@ function FinalCTA() {
         </footer>
       </Container>
     </section>
-  );
-}
-
-function Divider({ subtle }: { subtle?: boolean }) {
-  return (
-    <div className={subtle ? "h-12 sm:h-14" : "h-16 sm:h-20 lg:h-24"}>
-      {/* spacer; opt into subtle/normal rhythm */}
-    </div>
   );
 }

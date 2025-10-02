@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import AppThemeProvider from "@/src/components/AppThemeProvider";
-import Header from "@/components/Header";
+import Header from "@/src/components/Header";
 import { baseMetadata, structuredData } from "@/lib/seo";
 
 export const metadata: Metadata = baseMetadata;

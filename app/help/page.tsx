@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { createPageMetadata } from "@/lib/seo";
+import HelpPageClient from "@/src/components/faq/HelpPageClient";
+import { FAQ_ITEMS } from "./faqData";
+import { Footer } from "@/src/components/Footer";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Help & FAQs",
@@ -8,30 +11,18 @@ export const metadata: Metadata = createPageMetadata({
   path: "/help",
 });
 
-export default function HelpPage() {
+export default function HelpPage({
+  searchParams,
+}: {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}) {
+  const initialQueryRaw = searchParams?.q;
+  const initialQuery = Array.isArray(initialQueryRaw) ? initialQueryRaw[0] ?? "" : initialQueryRaw ?? "";
+
   return (
-    <main className="mx-auto max-w-2xl p-6 prose dark:prose-invert">
-      <h1>Help &amp; FAQs</h1>
-      <p>
-        <strong>SavedIt</strong> lets you save links from any app and organize them into collections.
-      </p>
-      <h2>Common actions</h2>
-      <ul>
-        <li>
-          <strong>Create a collection:</strong> In the app, tap <em>New Collection</em>.
-        </li>
-        <li>
-          <strong>Share to SavedIt:</strong> Use the system <em>Share</em> sheet and pick <em>SavedIt</em>.
-        </li>
-        <li>
-          <strong>Find it later:</strong> Search by title, tag, or source app.
-        </li>
-      </ul>
-      <hr />
-      <h3>Contact</h3>
-      <p>
-        Support: <a href="mailto:support@savedit.app">support@savedit.app</a>
-      </p>
-    </main>
+    <>
+      <HelpPageClient items={FAQ_ITEMS} initialQuery={initialQuery} initiallyExpandedId={null} />
+      <Footer />
+    </>
   );
 }
