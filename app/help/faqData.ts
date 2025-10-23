@@ -78,7 +78,7 @@ export const FAQ_ITEMS: FAQItem[] = [
     id: "contact-support",
     section: "Contact",
     question: "Need more help?",
-    answer: "Email support@savedit.app — we typically reply within 1–2 business days.",
+    answer: "Email contact.savedit@gmail.com — we typically reply within 1–2 business days.",
     keywords: ["support", "email", "help"],
   },
   {

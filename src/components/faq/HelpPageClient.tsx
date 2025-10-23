@@ -154,9 +154,9 @@ export default function HelpPageClient({ items, initialQuery = "", initiallyExpa
               Try a different keyword or email us at {" "}
               <a
                 className="font-medium text-emerald-600 underline decoration-emerald-300/70 underline-offset-4 transition hover:text-emerald-500 dark:text-emerald-300 dark:hover:text-emerald-200"
-                href="mailto:support@savedit.app"
+                href="mailto:contact.savedit@gmail.com"
               >
-                support@savedit.app
+                contact.savedit@gmail.com
               </a>
               .
             </p>
@@ -172,7 +172,7 @@ export default function HelpPageClient({ items, initialQuery = "", initiallyExpa
             </p>
           </div>
           <a
-            href="mailto:support@savedit.app"
+            href="mailto:contact.savedit@gmail.com"
             className="inline-flex items-center gap-2 rounded-full bg-text-light px-5 py-2 text-sm font-semibold text-white transition hover:bg-text-light/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 dark:bg-white/90 dark:text-text-light"
           >
             Contact support
