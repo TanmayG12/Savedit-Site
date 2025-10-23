@@ -15,7 +15,7 @@ export default function PrivacyHero() {
             SavedIt respects your privacy and is committed to protecting your data. This policy explains, in plain language, what information we collect, how we use it, and the choices you have.
           </p>
           <p className="text-sm text-text-dim dark:text-text-dark/70">
-            Last updated: September 2025
+            Last updated: October 2025
           </p>
         </div>
       </div>
