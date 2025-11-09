@@ -142,10 +142,10 @@ function Today() {
     >
       <div className="sticky top-8 sm:top-12 md:top-16 h-screen flex flex-col overflow-hidden">
         <Container className="w-full h-full flex flex-col">
-          <div className="pt-4 sm:pt-6 md:pt-8 lg:pt-10 mb-1 sm:mb-2 md:mb-4 lg:mb-6">
+          <div className="pt-4 sm:pt-6 md:pt-8 lg:pt-10 mb-4 sm:mb-2 md:mb-4 lg:mb-6">
             <SectionTitle
               eyebrow="Today"
-              title="Turn inspiration into action"
+              title="What you can do today"
               kicker="Save what you love, let AI organize it, and come back when you're ready to use it."
             />
           </div>
@@ -220,7 +220,9 @@ function StickyCard({
               src={card.image}
               alt={card.alt}
               fill
+              sizes="(max-width: 640px) 174px, (max-width: 1024px) 203px, 232px"
               className={card.imageClass}
+              unoptimized
             />
           </div>
         </div>
@@ -235,7 +237,7 @@ function Vision() {
       <Container>
         <SectionTitle
           eyebrow="Next"
-          title="From saving to doing"
+          title="What we&apos;re building next"
           kicker="We're building an Intent OS — a layer that helps you act on every save."
         />
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">

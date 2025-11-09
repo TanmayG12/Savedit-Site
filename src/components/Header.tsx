@@ -1,6 +1,9 @@
 // src/components/Header.tsx
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import ThemeToggle from "./ThemeToggle";
 
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
@@ -15,9 +18,38 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
 }
 
 export default function Header() {
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY < 10) {
+        // Always show at the top
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY) {
+        // Scrolling down - hide header
+        setIsVisible(false);
+      } else {
+        // Scrolling up - show header
+        setIsVisible(true);
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-neutral-200/70 bg-white/70 backdrop-blur-md
-                       dark:border-neutral-800/70 dark:bg-black/60">
+    <header 
+      className={`sticky top-0 z-50 w-full border-b border-neutral-200/70 bg-white/70 backdrop-blur-md
+                  dark:border-neutral-800/70 dark:bg-black/60 transition-transform duration-300 ${
+                    isVisible ? "translate-y-0" : "-translate-y-full"
+                  }`}
+    >
       <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-4 sm:h-16 sm:px-6 lg:px-8">
         {/* Brand */}
         <Link href="/" className="group inline-flex items-center gap-2">
