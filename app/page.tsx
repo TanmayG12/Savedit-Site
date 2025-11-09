@@ -142,7 +142,7 @@ function Today() {
     >
       <div className="sticky top-8 sm:top-12 md:top-16 h-screen flex flex-col overflow-hidden">
         <Container className="w-full h-full flex flex-col">
-          <div className="pt-4 sm:pt-6 md:pt-8 lg:pt-10 mb-8 sm:mb-4 md:mb-4 lg:mb-6">
+          <div className="pt-4 sm:pt-6 md:pt-8 lg:pt-10 mb-10 sm:mb-4 md:mb-4 lg:mb-6">
             <SectionTitle
               eyebrow="Today"
               title="What you can do today"
