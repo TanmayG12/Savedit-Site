@@ -142,7 +142,7 @@ function Today() {
     >
       <div className="sticky top-8 sm:top-12 md:top-16 h-screen flex flex-col overflow-hidden">
         <Container className="w-full h-full flex flex-col">
-          <div className="pt-4 sm:pt-6 md:pt-8 lg:pt-10 mb-6 sm:mb-4 md:mb-4 lg:mb-6">
+          <div className="pt-4 sm:pt-6 md:pt-8 lg:pt-10 mb-8 sm:mb-4 md:mb-4 lg:mb-6">
             <SectionTitle
               eyebrow="Today"
               title="What you can do today"
@@ -209,10 +209,10 @@ function StickyCard({
       style={{ opacity, x }}
       className="absolute inset-x-0 top-0 bottom-2 sm:bottom-4 md:bottom-6 lg:bottom-8 flex items-center justify-center"
     >
-      <Card className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 px-4 sm:px-5 py-0 w-full max-w-[620px] sm:max-w-[725px] lg:max-w-[830px] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_4px_40px_rgba(0,0,0,0.08)]">
-        <div className="flex-1 flex flex-col justify-center space-y-1 sm:space-y-2">
-          <h3 className="text-lg sm:text-xl font-medium text-neutral-900 dark:text-neutral-100">{card.title}</h3>
-          <p className="text-sm sm:text-base text-neutral-500 dark:text-neutral-400">{card.description}</p>
+      <Card className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 px-4 sm:px-5 py-4 sm:py-0 w-full max-w-[620px] sm:max-w-[725px] lg:max-w-[830px] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_4px_40px_rgba(0,0,0,0.08)]">
+        <div className="flex-1 flex flex-col justify-center space-y-2 sm:space-y-2">
+          <h3 className="text-lg sm:text-xl font-medium text-neutral-900 dark:text-neutral-100 leading-tight">{card.title}</h3>
+          <p className="text-sm sm:text-base text-neutral-500 dark:text-neutral-400 leading-relaxed">{card.description}</p>
         </div>
         <div className="w-full sm:w-1/2 flex justify-center items-center">
           <div className="relative w-full max-w-[174px] sm:max-w-[203px] lg:max-w-[232px] aspect-[9/19]">
