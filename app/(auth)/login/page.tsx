@@ -62,13 +62,14 @@ function LoginContent() {
         handleRecoveryToken()
     }, [])
 
-    // Update mode when URL params change
+    // Update mode when URL params change (only on initial load or URL change)
     useEffect(() => {
         const modeParam = searchParams.get('mode')
         if (modeParam === 'register') setMode('register')
         else if (modeParam === 'forgot') setMode('forgot-password')
-        else if (!modeParam && mode !== 'reset-password') setMode('login')
-    }, [searchParams, mode])
+        // Only reset to login if there's no mode param AND we're on initial load
+        // Don't override user-initiated mode changes
+    }, [searchParams])
 
     const handleEmailAuth = async (e: React.FormEvent) => {
         e.preventDefault()
