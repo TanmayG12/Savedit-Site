@@ -66,41 +66,38 @@ export function UserNav() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    <DropdownMenuItem
-                        onSelect={(e) => e.preventDefault()}
-                        className="cursor-default py-3"
-                    >
-                        <div className="flex w-full flex-col gap-2">
-                            <div className="text-sm text-muted-foreground">Appearance</div>
-                            <div className="flex items-center gap-1 rounded-2xl bg-muted/60 p-1.5">
-                                {[
-                                    { label: "Light", value: "light", icon: Sun },
-                                    { label: "Dark", value: "dark", icon: Moon },
-                                    { label: "System", value: "system", icon: MonitorSmartphone },
-                                ].map((opt) => {
-                                    const Icon = opt.icon
-                                    const active =
-                                        theme === opt.value ||
-                                        (opt.value === "system" && theme === "system")
-                                    return (
-                                        <button
-                                            key={opt.value}
-                                            type="button"
-                                            onClick={() => setTheme(opt.value as "light" | "dark" | "system")}
-                                            className={cn(
-                                                "flex h-10 w-full items-center justify-center gap-2 rounded-xl px-3 text-sm font-medium text-muted-foreground transition",
-                                                active && "bg-background text-foreground shadow-sm"
-                                            )}
-                                            aria-label={opt.label}
-                                        >
-                                            <Icon className="h-4 w-4" />
-                                            <span className="hidden sm:inline">{opt.label}</span>
-                                        </button>
-                                    )
-                                })}
-                            </div>
+                    <div className="px-2 py-3">
+                        <div className="text-sm text-muted-foreground mb-2 px-1">Appearance</div>
+                        <div className="flex items-center gap-1 rounded-2xl bg-muted/60 p-1.5">
+                            {[
+                                { label: "Light", value: "light", icon: Sun },
+                                { label: "Dark", value: "dark", icon: Moon },
+                                { label: "System", value: "system", icon: MonitorSmartphone },
+                            ].map((opt) => {
+                                const Icon = opt.icon
+                                const active = theme === opt.value
+                                return (
+                                    <button
+                                        key={opt.value}
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.preventDefault()
+                                            e.stopPropagation()
+                                            setTheme(opt.value as "light" | "dark" | "system")
+                                        }}
+                                        className={cn(
+                                            "flex h-9 flex-1 items-center justify-center gap-2 rounded-xl px-3 text-sm font-medium text-muted-foreground transition-all",
+                                            active && "bg-background text-foreground shadow-sm"
+                                        )}
+                                        aria-label={opt.label}
+                                    >
+                                        <Icon className="h-4 w-4" />
+                                        <span className="hidden sm:inline">{opt.label}</span>
+                                    </button>
+                                )
+                            })}
                         </div>
-                    </DropdownMenuItem>
+                    </div>
                     <DropdownMenuItem onClick={() => router.push('/dashboard/settings')}>
                         Settings
                         <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
