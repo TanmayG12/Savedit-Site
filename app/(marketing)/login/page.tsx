@@ -6,7 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase'
 import { toast } from 'sonner'
-import { Loader2, Mail, Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react'
+import { Loader2, Mail, Lock, Eye, EyeOff, ArrowLeft, Check } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -15,7 +15,7 @@ import { Separator } from "@/components/ui/separator"
 // Force dynamic rendering to avoid Supabase client initialization during build
 export const dynamic = 'force-dynamic'
 
-type AuthMode = 'login' | 'register' | 'forgot-password'
+type AuthMode = 'login' | 'register' | 'forgot-password' | 'reset-password'
 
 function LoginContent() {
     const searchParams = useSearchParams()
@@ -35,15 +35,40 @@ function LoginContent() {
     const [loading, setLoading] = useState(false)
     const [socialLoading, setSocialLoading] = useState<'google' | 'apple' | null>(null)
     const [resetEmailSent, setResetEmailSent] = useState(false)
+    const [passwordResetSuccess, setPasswordResetSuccess] = useState(false)
     const router = useRouter()
+
+    // Check for recovery token in URL hash (from password reset email)
+    useEffect(() => {
+        const handleRecoveryToken = async () => {
+            // Check if we're on the reset page
+            if (typeof window === 'undefined') return
+            
+            const hash = window.location.hash
+            if (hash && hash.includes('type=recovery')) {
+                // Supabase includes the recovery token in the hash
+                // The client library will automatically handle the session
+                const supabase = createClient()
+                
+                // Wait for the auth state to update
+                const { data: { session } } = await supabase.auth.getSession()
+                
+                if (session) {
+                    setMode('reset-password')
+                }
+            }
+        }
+        
+        handleRecoveryToken()
+    }, [])
 
     // Update mode when URL params change
     useEffect(() => {
         const modeParam = searchParams.get('mode')
         if (modeParam === 'register') setMode('register')
         else if (modeParam === 'forgot') setMode('forgot-password')
-        else if (!modeParam) setMode('login')
-    }, [searchParams])
+        else if (!modeParam && mode !== 'reset-password') setMode('login')
+    }, [searchParams, mode])
 
     const handleEmailAuth = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -158,8 +183,53 @@ function LoginContent() {
         }
     }
 
+    const handleResetPassword = async (e: React.FormEvent) => {
+        e.preventDefault()
+        
+        if (password !== confirmPassword) {
+            toast.error('Passwords do not match')
+            return
+        }
+
+        if (password.length < 8) {
+            toast.error('Password must be at least 8 characters')
+            return
+        }
+
+        setLoading(true)
+
+        try {
+            const supabase = createClient()
+            const { error } = await supabase.auth.updateUser({
+                password: password,
+            })
+
+            if (error) {
+                toast.error(error.message)
+                return
+            }
+
+            setPasswordResetSuccess(true)
+            toast.success('Password updated successfully!')
+            
+            // Clear the hash from URL
+            window.history.replaceState(null, '', '/login')
+            
+            // Redirect to dashboard after a short delay
+            setTimeout(() => {
+                router.push('/dashboard')
+                router.refresh()
+            }, 1500)
+        } catch (error: unknown) {
+            toast.error('Something went wrong. Please try again.')
+            console.error('Reset password error:', error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
     const toggleMode = () => {
-        if (mode === 'forgot-password') {
+        if (mode === 'forgot-password' || mode === 'reset-password') {
             setMode('login')
         } else {
             setMode(mode === 'login' ? 'register' : 'login')
@@ -238,19 +308,21 @@ function LoginContent() {
                         {/* Header */}
                         <div className="text-center lg:text-left">
                             <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-                                {mode === 'login' ? 'Welcome back' : mode === 'register' ? 'Create an account' : 'Reset password'}
+                                {mode === 'login' ? 'Welcome back' : mode === 'register' ? 'Create an account' : mode === 'reset-password' ? 'Set new password' : 'Reset password'}
                             </h1>
                             <p className="mt-1 text-sm text-muted-foreground">
                                 {mode === 'login'
                                     ? 'Sign in to access your saved items'
                                     : mode === 'register'
                                     ? 'Start saving and organizing your content'
+                                    : mode === 'reset-password'
+                                    ? 'Enter your new password below'
                                     : 'Enter your email and we\'ll send you a reset link'}
                             </p>
                         </div>
 
                         {/* Social Auth Buttons */}
-                        {mode !== 'forgot-password' && (
+                        {mode !== 'forgot-password' && mode !== 'reset-password' && (
                         <div className="space-y-2">
                             <Button
                                 variant="outline"
@@ -302,7 +374,7 @@ function LoginContent() {
                         )}
 
                         {/* Divider */}
-                        {mode !== 'forgot-password' && (
+                        {mode !== 'forgot-password' && mode !== 'reset-password' && (
                         <div className="relative">
                             <div className="absolute inset-0 flex items-center">
                                 <Separator className="w-full" />
@@ -315,8 +387,93 @@ function LoginContent() {
                         </div>
                         )}
 
-                        {/* Forgot Password Form */}
-                        {mode === 'forgot-password' ? (
+                        {/* Reset Password Form (after clicking email link) */}
+                        {mode === 'reset-password' ? (
+                            passwordResetSuccess ? (
+                                <div className="space-y-4 text-center">
+                                    <div className="mx-auto w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                                        <Check className="h-6 w-6 text-green-600 dark:text-green-400" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-base font-medium text-foreground">Password updated!</h3>
+                                        <p className="mt-1 text-sm text-muted-foreground">
+                                            Redirecting you to your dashboard...
+                                        </p>
+                                    </div>
+                                </div>
+                            ) : (
+                                <form onSubmit={handleResetPassword} className="space-y-3">
+                                    <div className="space-y-1.5">
+                                        <Label htmlFor="new-password" className="text-sm font-medium">
+                                            New password
+                                        </Label>
+                                        <div className="relative">
+                                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                            <Input
+                                                id="new-password"
+                                                type={showPassword ? 'text' : 'password'}
+                                                placeholder="••••••••"
+                                                required
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                className="h-10 pl-9 pr-9 text-sm"
+                                                disabled={loading}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                                tabIndex={-1}
+                                            >
+                                                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-1.5">
+                                        <Label htmlFor="confirm-new-password" className="text-sm font-medium">
+                                            Confirm new password
+                                        </Label>
+                                        <div className="relative">
+                                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                            <Input
+                                                id="confirm-new-password"
+                                                type={showConfirmPassword ? 'text' : 'password'}
+                                                placeholder="••••••••"
+                                                required
+                                                value={confirmPassword}
+                                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                                className="h-10 pl-9 pr-9 text-sm"
+                                                disabled={loading}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                                tabIndex={-1}
+                                            >
+                                                {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <Button
+                                        type="submit"
+                                        className="w-full h-10 text-sm font-medium"
+                                        disabled={loading}
+                                    >
+                                        {loading ? (
+                                            <>
+                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                Updating...
+                                            </>
+                                        ) : (
+                                            'Update password'
+                                        )}
+                                    </Button>
+                                </form>
+                            )
+                        ) : mode === 'forgot-password' ? (
                             resetEmailSent ? (
                                 <div className="space-y-4 text-center">
                                     <div className="mx-auto w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
@@ -504,7 +661,7 @@ function LoginContent() {
                         )}
 
                         {/* Toggle Mode */}
-                        {mode !== 'forgot-password' && (
+                        {mode !== 'forgot-password' && mode !== 'reset-password' && (
                         <div className="text-center">
                             <p className="text-sm text-muted-foreground">
                                 {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}{' '}
