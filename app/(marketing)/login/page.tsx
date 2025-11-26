@@ -165,7 +165,7 @@ export default function LoginPage() {
                 </div>
 
                 {/* Content */}
-                <div className="relative z-10 flex flex-col justify-between p-12 text-white w-full">
+                <div className="relative z-10 flex flex-col justify-between p-8 text-white w-full h-full">
                     {/* Logo/Brand */}
                     <Link href="/" className="flex items-center gap-2 text-white hover:opacity-80 transition-opacity">
                         <ArrowLeft className="h-5 w-5" />
@@ -173,26 +173,26 @@ export default function LoginPage() {
                     </Link>
 
                     {/* Main Content */}
-                    <div className="flex-1 flex flex-col items-center justify-center">
+                    <div className="flex-1 flex flex-col items-center justify-center py-4">
                         {/* App Screenshot */}
-                        <div className="relative w-full max-w-[280px] mx-auto">
-                            <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-[2.5rem] blur-2xl" />
+                        <div className="relative w-full max-w-[200px] xl:max-w-[240px] mx-auto">
+                            <div className="absolute -inset-3 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-[2rem] blur-2xl" />
                             <Image
                                 src="/Screenshots/1.png"
                                 alt="SavedIt app interface"
                                 width={1080}
                                 height={2336}
-                                className="relative z-10 w-full h-auto rounded-[2rem] shadow-2xl"
+                                className="relative z-10 w-full h-auto rounded-[1.5rem] shadow-2xl"
                                 priority
                             />
                         </div>
 
                         {/* Tagline */}
-                        <div className="mt-12 text-center max-w-md">
-                            <h2 className="text-3xl font-semibold tracking-tight">
+                        <div className="mt-6 text-center max-w-sm">
+                            <h2 className="text-2xl xl:text-3xl font-semibold tracking-tight">
                                 Save what inspires you.
                             </h2>
-                            <p className="mt-3 text-lg text-neutral-300">
+                            <p className="mt-2 text-base text-neutral-300">
                                 Articles, videos, or reels — all your saves, automatically organized with AI.
                             </p>
                         </div>
@@ -206,7 +206,7 @@ export default function LoginPage() {
             </div>
 
             {/* Right Panel - Auth Form */}
-            <div className="flex-1 flex flex-col min-h-screen bg-background">
+            <div className="flex-1 flex flex-col h-screen bg-background overflow-hidden">
                 {/* Mobile Header */}
                 <div className="lg:hidden p-4 border-b border-border">
                     <Link href="/" className="flex items-center gap-2 text-foreground hover:opacity-80 transition-opacity">
@@ -216,14 +216,14 @@ export default function LoginPage() {
                 </div>
 
                 {/* Auth Form Container */}
-                <div className="flex-1 flex items-center justify-center p-6 sm:p-8 lg:p-12">
-                    <div className="w-full max-w-[420px] space-y-8">
+                <div className="flex-1 flex items-center justify-center p-6 sm:p-8 lg:p-8 overflow-y-auto">
+                    <div className="w-full max-w-[400px] space-y-5">
                         {/* Header */}
                         <div className="text-center lg:text-left">
-                            <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+                            <h1 className="text-2xl font-semibold tracking-tight text-foreground">
                                 {mode === 'login' ? 'Welcome back' : mode === 'register' ? 'Create an account' : 'Reset password'}
                             </h1>
-                            <p className="mt-2 text-muted-foreground">
+                            <p className="mt-1 text-sm text-muted-foreground">
                                 {mode === 'login'
                                     ? 'Sign in to access your saved items'
                                     : mode === 'register'
@@ -234,10 +234,10 @@ export default function LoginPage() {
 
                         {/* Social Auth Buttons */}
                         {mode !== 'forgot-password' && (
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                             <Button
                                 variant="outline"
-                                className="w-full h-12 text-base font-medium gap-3 hover:bg-accent transition-colors"
+                                className="w-full h-11 text-sm font-medium gap-2 hover:bg-accent transition-colors"
                                 onClick={() => handleSocialAuth('google')}
                                 disabled={socialLoading !== null || loading}
                             >
@@ -268,7 +268,7 @@ export default function LoginPage() {
 
                             <Button
                                 variant="outline"
-                                className="w-full h-12 text-base font-medium gap-3 hover:bg-accent transition-colors"
+                                className="w-full h-11 text-sm font-medium gap-2 hover:bg-accent transition-colors"
                                 onClick={() => handleSocialAuth('apple')}
                                 disabled={socialLoading !== null || loading}
                             >
@@ -301,19 +301,19 @@ export default function LoginPage() {
                         {/* Forgot Password Form */}
                         {mode === 'forgot-password' ? (
                             resetEmailSent ? (
-                                <div className="space-y-6 text-center">
-                                    <div className="mx-auto w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
-                                        <Mail className="h-8 w-8 text-green-600 dark:text-green-400" />
+                                <div className="space-y-4 text-center">
+                                    <div className="mx-auto w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                                        <Mail className="h-6 w-6 text-green-600 dark:text-green-400" />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-medium text-foreground">Check your email</h3>
-                                        <p className="mt-2 text-sm text-muted-foreground">
+                                        <h3 className="text-base font-medium text-foreground">Check your email</h3>
+                                        <p className="mt-1 text-sm text-muted-foreground">
                                             We&apos;ve sent a password reset link to <strong>{email}</strong>
                                         </p>
                                     </div>
                                     <Button
                                         variant="outline"
-                                        className="w-full h-12"
+                                        className="w-full h-10"
                                         onClick={() => {
                                             setMode('login')
                                             setResetEmailSent(false)
@@ -323,13 +323,13 @@ export default function LoginPage() {
                                     </Button>
                                 </div>
                             ) : (
-                                <form onSubmit={handleForgotPassword} className="space-y-4">
-                                    <div className="space-y-2">
+                                <form onSubmit={handleForgotPassword} className="space-y-3">
+                                    <div className="space-y-1.5">
                                         <Label htmlFor="reset-email" className="text-sm font-medium">
                                             Email address
                                         </Label>
                                         <div className="relative">
-                                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                             <Input
                                                 id="reset-email"
                                                 type="email"
@@ -337,7 +337,7 @@ export default function LoginPage() {
                                                 required
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
-                                                className="h-12 pl-10 text-base"
+                                                className="h-10 pl-9 text-sm"
                                                 disabled={loading}
                                             />
                                         </div>
@@ -345,12 +345,12 @@ export default function LoginPage() {
 
                                     <Button
                                         type="submit"
-                                        className="w-full h-12 text-base font-medium"
+                                        className="w-full h-10 text-sm font-medium"
                                         disabled={loading}
                                     >
                                         {loading ? (
                                             <>
-                                                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                                 Sending...
                                             </>
                                         ) : (
@@ -361,7 +361,7 @@ export default function LoginPage() {
                                     <Button
                                         type="button"
                                         variant="ghost"
-                                        className="w-full h-12 text-base"
+                                        className="w-full h-10 text-sm"
                                         onClick={() => setMode('login')}
                                         disabled={loading}
                                     >
@@ -371,13 +371,13 @@ export default function LoginPage() {
                             )
                         ) : (
                         /* Email Form */
-                        <form onSubmit={handleEmailAuth} className="space-y-4">
-                            <div className="space-y-2">
+                        <form onSubmit={handleEmailAuth} className="space-y-3">
+                            <div className="space-y-1.5">
                                 <Label htmlFor="email" className="text-sm font-medium">
                                     Email address
                                 </Label>
                                 <div className="relative">
-                                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                     <Input
                                         id="email"
                                         type="email"
@@ -385,18 +385,18 @@ export default function LoginPage() {
                                         required
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        className="h-12 pl-10 text-base"
+                                        className="h-10 pl-9 text-sm"
                                         disabled={loading || socialLoading !== null}
                                     />
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
+                            <div className="space-y-1.5">
                                 <Label htmlFor="password" className="text-sm font-medium">
                                     Password
                                 </Label>
                                 <div className="relative">
-                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                     <Input
                                         id="password"
                                         type={showPassword ? 'text' : 'password'}
@@ -404,7 +404,7 @@ export default function LoginPage() {
                                         required
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="h-12 pl-10 pr-10 text-base"
+                                        className="h-10 pl-9 pr-9 text-sm"
                                         disabled={loading || socialLoading !== null}
                                     />
                                     <button
@@ -414,21 +414,21 @@ export default function LoginPage() {
                                         tabIndex={-1}
                                     >
                                         {showPassword ? (
-                                            <EyeOff className="h-5 w-5" />
+                                            <EyeOff className="h-4 w-4" />
                                         ) : (
-                                            <Eye className="h-5 w-5" />
+                                            <Eye className="h-4 w-4" />
                                         )}
                                     </button>
                                 </div>
                             </div>
 
                             {mode === 'register' && (
-                                <div className="space-y-2">
+                                <div className="space-y-1.5">
                                     <Label htmlFor="confirmPassword" className="text-sm font-medium">
                                         Confirm password
                                     </Label>
                                     <div className="relative">
-                                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                         <Input
                                             id="confirmPassword"
                                             type={showConfirmPassword ? 'text' : 'password'}
@@ -436,7 +436,7 @@ export default function LoginPage() {
                                             required
                                             value={confirmPassword}
                                             onChange={(e) => setConfirmPassword(e.target.value)}
-                                            className="h-12 pl-10 pr-10 text-base"
+                                            className="h-10 pl-9 pr-9 text-sm"
                                             disabled={loading || socialLoading !== null}
                                         />
                                         <button
@@ -446,9 +446,9 @@ export default function LoginPage() {
                                             tabIndex={-1}
                                         >
                                             {showConfirmPassword ? (
-                                                <EyeOff className="h-5 w-5" />
+                                                <EyeOff className="h-4 w-4" />
                                             ) : (
-                                                <Eye className="h-5 w-5" />
+                                                <Eye className="h-4 w-4" />
                                             )}
                                         </button>
                                     </div>
@@ -469,12 +469,12 @@ export default function LoginPage() {
 
                             <Button
                                 type="submit"
-                                className="w-full h-12 text-base font-medium"
+                                className="w-full h-10 text-sm font-medium"
                                 disabled={loading || socialLoading !== null}
                             >
                                 {loading ? (
                                     <>
-                                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                         {mode === 'login' ? 'Signing in...' : 'Creating account...'}
                                     </>
                                 ) : mode === 'login' ? (
