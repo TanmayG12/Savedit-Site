@@ -27,6 +27,7 @@ import {
     Check,
     X,
     Calendar,
+    ArrowLeft,
 } from 'lucide-react'
 import { AddToCollectionDialog } from './add-to-collection-dialog'
 import { CreateReminderDialog } from './create-reminder-dialog'
@@ -231,6 +232,17 @@ export function ItemDetailSheet({
                             />
                         </div>
                         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+
+                        {/* Back button */}
+                        <Button
+                            variant="secondary"
+                            size="icon"
+                            className="absolute top-4 right-4 h-8 w-8 rounded-full bg-background/90 backdrop-blur hover:bg-background"
+                            onClick={() => onOpenChange(false)}
+                        >
+                            <X className="h-4 w-4" />
+                            <span className="sr-only">Close</span>
+                        </Button>
 
                         {/* Platform badge */}
                         <div className="absolute top-4 left-4">
