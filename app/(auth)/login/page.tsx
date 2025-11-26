@@ -36,30 +36,49 @@ function LoginContent() {
     const [socialLoading, setSocialLoading] = useState<'google' | 'apple' | null>(null)
     const [resetEmailSent, setResetEmailSent] = useState(false)
     const [passwordResetSuccess, setPasswordResetSuccess] = useState(false)
+    const [initializing, setInitializing] = useState(true)
     const router = useRouter()
 
     // Check for recovery token in URL hash (from password reset email)
     useEffect(() => {
-        const handleRecoveryToken = async () => {
-            // Check if we're on the reset page
-            if (typeof window === 'undefined') return
+        const supabase = createClient()
+        
+        // Listen for auth state changes - this catches the recovery token processing
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+            console.log('Auth event:', event, session?.user?.email)
             
+            if (event === 'PASSWORD_RECOVERY') {
+                // User clicked the recovery link, show the reset form
+                setMode('reset-password')
+                setInitializing(false)
+            } else if (event === 'SIGNED_IN' && window.location.hash.includes('type=recovery')) {
+                // Fallback: check if we came from a recovery link
+                setMode('reset-password')
+                setInitializing(false)
+            } else {
+                setInitializing(false)
+            }
+        })
+
+        // Also check immediately in case the auth state is already set
+        const checkInitialState = async () => {
             const hash = window.location.hash
             if (hash && hash.includes('type=recovery')) {
-                // Supabase includes the recovery token in the hash
-                // The client library will automatically handle the session
-                const supabase = createClient()
-                
-                // Wait for the auth state to update
+                // Give Supabase a moment to process the token
+                await new Promise(resolve => setTimeout(resolve, 100))
                 const { data: { session } } = await supabase.auth.getSession()
-                
                 if (session) {
                     setMode('reset-password')
                 }
             }
+            setInitializing(false)
         }
         
-        handleRecoveryToken()
+        checkInitialState()
+
+        return () => {
+            subscription.unsubscribe()
+        }
     }, [])
 
     // Update mode when URL params change (only on initial load or URL change)
@@ -238,6 +257,15 @@ function LoginContent() {
         setPassword('')
         setConfirmPassword('')
         setResetEmailSent(false)
+    }
+
+    // Show loading while checking for recovery token
+    if (initializing) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-background">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            </div>
+        )
     }
 
     return (
