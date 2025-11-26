@@ -29,6 +29,18 @@ export default function DashboardPage() {
                 return
             }
 
+            // Check if user needs to complete profile
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('onboarding_done')
+                .eq('user_id', session.user.id)
+                .single()
+
+            if (profile && !profile.onboarding_done) {
+                router.push('/dashboard/complete-profile')
+                return
+            }
+
             // Fetch all items with descriptions from the active view
             const { data, error } = await supabase
                 .from('saved_items_active')
