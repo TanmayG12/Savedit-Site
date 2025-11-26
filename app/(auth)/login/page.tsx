@@ -42,42 +42,68 @@ function LoginContent() {
     // Check for recovery token in URL hash (from password reset email)
     useEffect(() => {
         const supabase = createClient()
+        let mounted = true
+        let resolved = false
         
-        // Listen for auth state changes - this catches the recovery token processing
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-            console.log('Auth event:', event, session?.user?.email)
-            
-            if (event === 'PASSWORD_RECOVERY') {
-                // User clicked the recovery link, show the reset form
-                setMode('reset-password')
-                setInitializing(false)
-            } else if (event === 'SIGNED_IN' && window.location.hash.includes('type=recovery')) {
-                // Fallback: check if we came from a recovery link
-                setMode('reset-password')
-                setInitializing(false)
-            } else {
-                setInitializing(false)
-            }
-        })
-
-        // Also check immediately in case the auth state is already set
-        const checkInitialState = async () => {
+        const handleRecovery = async () => {
             const hash = window.location.hash
-            if (hash && hash.includes('type=recovery')) {
-                // Give Supabase a moment to process the token
-                await new Promise(resolve => setTimeout(resolve, 100))
-                const { data: { session } } = await supabase.auth.getSession()
-                if (session) {
-                    setMode('reset-password')
+            
+            // Check if this is a recovery link
+            if (hash && (hash.includes('type=recovery') || hash.includes('type=magiclink'))) {
+                console.log('Recovery/magic link detected in hash')
+                
+                // The hash contains the access_token and refresh_token
+                // Supabase client will automatically pick these up
+                // We need to wait for it to process
+                
+                // First, try to get the session (Supabase may have already processed it)
+                const { data: { session }, error } = await supabase.auth.getSession()
+                
+                if (session && !error) {
+                    console.log('Session found after recovery:', session.user?.email)
+                    if (mounted && !resolved) {
+                        resolved = true
+                        setMode('reset-password')
+                        setInitializing(false)
+                    }
+                    return
+                }
+                
+                // If no session yet, set up a listener and wait
+                const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+                    console.log('Auth state change:', event)
+                    if ((event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') && !resolved) {
+                        resolved = true
+                        if (mounted) {
+                            setMode('reset-password')
+                            setInitializing(false)
+                        }
+                        subscription.unsubscribe()
+                    }
+                })
+                
+                // Timeout fallback - if nothing happens in 3 seconds, show login
+                setTimeout(() => {
+                    if (mounted && !resolved) {
+                        console.log('Recovery timeout, showing login')
+                        resolved = true
+                        setInitializing(false)
+                        subscription.unsubscribe()
+                    }
+                }, 3000)
+                
+            } else {
+                // No recovery token, just show login
+                if (mounted) {
+                    setInitializing(false)
                 }
             }
-            setInitializing(false)
         }
         
-        checkInitialState()
-
+        handleRecovery()
+        
         return () => {
-            subscription.unsubscribe()
+            mounted = false
         }
     }, [])
 
@@ -185,7 +211,7 @@ function LoginContent() {
         try {
             const supabase = createClient()
             const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `${window.location.origin}/login?reset=true`,
+                redirectTo: `${window.location.origin}/login`,
             })
 
             if (error) {
