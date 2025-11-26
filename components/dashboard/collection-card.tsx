@@ -1,10 +1,11 @@
 'use client'
 
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+/* eslint-disable @next/next/no-img-element */
+import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Folder, MoreVertical } from "lucide-react"
-import Link from "next/link"
+import { Folder, MoreVertical, Users } from "lucide-react"
+import { useRouter } from "next/navigation"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -29,68 +30,129 @@ interface CollectionCardProps {
 }
 
 export function CollectionCard({ collection }: CollectionCardProps) {
-    const preview = collection.sample_thumbnails?.[0]
+    const router = useRouter()
+    const thumbnails = collection.sample_thumbnails?.filter(Boolean).slice(0, 4) || []
+    const hasMultipleThumbnails = thumbnails.length > 1
+
+    const handleClick = () => {
+        router.push(`/dashboard/collections/${collection.id}`)
+    }
+
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            handleClick()
+        }
+    }
 
     return (
         <Card
             className={cn(
-                "group relative overflow-hidden transition-all hover:shadow-lg border-border/70",
-                preview && "bg-muted/40"
+                "group relative overflow-hidden transition-all duration-200 cursor-pointer",
+                "hover:-translate-y-1 hover:shadow-xl",
+                "border-border/50 bg-card"
             )}
+            onClick={handleClick}
+            onKeyDown={handleKeyPress}
+            role="button"
+            tabIndex={0}
         >
-            {preview ? (
-                <div
-                    className="absolute inset-0 opacity-70 transition-opacity duration-300 group-hover:opacity-90"
-                    style={{
-                        backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.7)), url(${preview})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                    }}
-                />
-            ) : (
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-muted to-secondary/10" />
-            )}
-            <Link href={`/dashboard/collections/${collection.id}`} className="absolute inset-0 z-10" />
-            <CardHeader className="relative z-20 flex flex-row items-center justify-between space-y-0 pb-2">
-                <div className="flex items-center gap-2">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-background/80 backdrop-blur-sm border border-white/10">
-                        <Folder className="h-4 w-4 text-muted-foreground" />
+            {/* Thumbnail area */}
+            <div className="relative aspect-[4/3] sm:aspect-[16/10] w-full overflow-hidden bg-muted">
+                {thumbnails.length > 0 ? (
+                    hasMultipleThumbnails ? (
+                        // Grid of thumbnails
+                        <div className="grid grid-cols-2 grid-rows-2 h-full w-full gap-0.5">
+                            {thumbnails.slice(0, 4).map((thumb, idx) => (
+                                <div key={idx} className="relative overflow-hidden bg-muted">
+                                    <img
+                                        src={thumb}
+                                        alt=""
+                                        className="h-full w-full object-cover"
+                                        onError={(e) => e.currentTarget.style.display = 'none'}
+                                    />
+                                </div>
+                            ))}
+                            {/* Fill empty slots */}
+                            {thumbnails.length < 4 && [...Array(4 - thumbnails.length)].map((_, idx) => (
+                                <div key={`empty-${idx}`} className="bg-muted/50" />
+                            ))}
+                        </div>
+                    ) : (
+                        // Single thumbnail
+                        <img
+                            src={thumbnails[0]}
+                            alt=""
+                            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            onError={(e) => e.currentTarget.style.display = 'none'}
+                        />
+                    )
+                ) : (
+                    // Placeholder gradient
+                    <div className="h-full w-full bg-gradient-to-br from-primary/10 via-muted to-secondary/10 flex items-center justify-center">
+                        <Folder className="h-8 w-8 sm:h-12 sm:w-12 text-muted-foreground/30" />
                     </div>
-                    <div>
-                        <CardTitle className="text-sm font-semibold text-foreground">
-                            {collection.name}
-                        </CardTitle>
-                        {collection.role && (
-                            <p className="text-[11px] text-muted-foreground capitalize">
-                                {collection.role}{collection.is_shared ? ' • Shared' : ''}
-                            </p>
-                        )}
-                    </div>
-                </div>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0 z-20 relative">
-                            <span className="sr-only">Open menu</span>
-                            <MoreVertical className="h-4 w-4" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuItem>Rename</DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            </CardHeader>
-            <CardContent className="relative z-20">
-                <div className="text-3xl font-bold text-foreground drop-shadow-sm">{collection.item_count || 0}</div>
-                <p className="text-xs text-muted-foreground">items</p>
-            </CardContent>
-            {collection.is_shared && (
-                <CardFooter className="relative z-20 pt-0">
-                    <Badge variant="secondary" className="text-[11px] rounded-full bg-background/80 backdrop-blur-sm">
-                        Shared
+                )}
+                
+                {/* Gradient overlay - works for both light and dark */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                
+                {/* Item count badge */}
+                <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3">
+                    <Badge 
+                        variant="secondary" 
+                        className="bg-white/90 dark:bg-black/70 text-foreground dark:text-white backdrop-blur-sm border-0 text-xs sm:text-sm font-semibold px-2 py-0.5 sm:px-2.5 sm:py-1"
+                    >
+                        {collection.item_count || 0} {(collection.item_count || 0) === 1 ? 'item' : 'items'}
                     </Badge>
-                </CardFooter>
-            )}
+                </div>
+
+                {/* Shared indicator */}
+                {collection.is_shared && (
+                    <div className="absolute top-2 left-2 sm:top-3 sm:left-3">
+                        <Badge 
+                            variant="secondary" 
+                            className="bg-blue-500/90 text-white backdrop-blur-sm border-0 text-[10px] sm:text-xs font-medium px-1.5 py-0.5 sm:px-2 flex items-center gap-1"
+                        >
+                            <Users className="h-3 w-3" />
+                            <span className="hidden sm:inline">Shared</span>
+                        </Badge>
+                    </div>
+                )}
+
+                {/* Menu button */}
+                <div className="absolute top-2 right-2 sm:top-3 sm:right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button 
+                                variant="secondary" 
+                                size="icon"
+                                className="h-7 w-7 sm:h-8 sm:w-8 bg-white/90 dark:bg-black/70 backdrop-blur-sm hover:bg-white dark:hover:bg-black"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <MoreVertical className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                <span className="sr-only">Open menu</span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem>Rename</DropdownMenuItem>
+                            <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+            </div>
+
+            {/* Card content */}
+            <div className="p-2 sm:p-3">
+                <h3 className="font-semibold text-sm sm:text-base text-foreground truncate">
+                    {collection.name}
+                </h3>
+                {collection.role && (
+                    <p className="text-[10px] sm:text-xs text-muted-foreground capitalize mt-0.5">
+                        {collection.role}
+                    </p>
+                )}
+            </div>
         </Card>
     )
 }
