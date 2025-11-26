@@ -277,10 +277,10 @@ function LoginContent() {
                         {/* Tagline */}
                         <div className="mt-6 text-center max-w-sm">
                             <h2 className="text-2xl xl:text-3xl font-semibold tracking-tight">
-                                Save what inspires you.
+                                One place for all your saves.
                             </h2>
                             <p className="mt-2 text-base text-neutral-300">
-                                Articles, videos, or reels — all your saves, automatically organized with AI.
+                                Your content syncs instantly across mobile and web.
                             </p>
                         </div>
                     </div>
