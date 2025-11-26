@@ -231,7 +231,6 @@ export function ItemDetailSheet({
                                 itemType={item.provider}
                             />
                         </div>
-                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
 
                         {/* Back button */}
                         <Button
