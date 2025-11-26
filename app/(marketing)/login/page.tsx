@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase'
@@ -17,8 +17,16 @@ export const dynamic = 'force-dynamic'
 
 type AuthMode = 'login' | 'register' | 'forgot-password'
 
-export default function LoginPage() {
-    const [mode, setMode] = useState<AuthMode>('login')
+function LoginContent() {
+    const searchParams = useSearchParams()
+    const initialMode = (): AuthMode => {
+        const modeParam = searchParams.get('mode')
+        if (modeParam === 'register') return 'register'
+        if (modeParam === 'forgot') return 'forgot-password'
+        return 'login'
+    }
+    
+    const [mode, setMode] = useState<AuthMode>(initialMode)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
@@ -28,6 +36,14 @@ export default function LoginPage() {
     const [socialLoading, setSocialLoading] = useState<'google' | 'apple' | null>(null)
     const [resetEmailSent, setResetEmailSent] = useState(false)
     const router = useRouter()
+
+    // Update mode when URL params change
+    useEffect(() => {
+        const modeParam = searchParams.get('mode')
+        if (modeParam === 'register') setMode('register')
+        else if (modeParam === 'forgot') setMode('forgot-password')
+        else if (!modeParam) setMode('login')
+    }, [searchParams])
 
     const handleEmailAuth = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -526,5 +542,17 @@ export default function LoginPage() {
                 </div>
             </div>
         </div>
+    )
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            </div>
+        }>
+            <LoginContent />
+        </Suspense>
     )
 }
