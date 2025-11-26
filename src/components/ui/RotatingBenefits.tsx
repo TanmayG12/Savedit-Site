@@ -66,14 +66,14 @@ export function RotatingBenefits({
   return (
     <div
       aria-live="polite"
-      className={`mt-3 flex h-6 items-center text-base text-neutral-700 transition-opacity duration-300 dark:text-neutral-200 ${
+      className={`mt-3 flex min-h-6 items-center text-base text-neutral-700 transition-opacity duration-300 dark:text-neutral-200 ${
         fading ? "opacity-0" : "opacity-100"
       }`}
     >
-      <span className="truncate">{typed}</span>
+      <span className="break-words">{typed}</span>
       {/* caret */}
       {!reduced && (
-        <span className="ml-1 inline-block h-5 w-[2px] animate-pulse bg-current" />
+        <span className="ml-1 inline-block h-5 w-[2px] flex-shrink-0 animate-pulse bg-current" />
       )}
     </div>
   );

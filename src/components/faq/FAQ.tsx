@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo } from "react";
-import type { FAQItem as FAQItemType } from "@/app/help/faqData";
+import type { FAQItem as FAQItemType } from "@/app/(marketing)/help/faqData";
 import FAQItem from "./FAQItem";
-import { FAQ_SECTIONS } from "@/app/help/faqData";
+import { FAQ_SECTIONS } from "@/app/(marketing)/help/faqData";
 
 export type FAQProps = {
   items: FAQItemType[];

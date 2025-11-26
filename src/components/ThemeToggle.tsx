@@ -1,68 +1,81 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { Sun, Moon } from "lucide-react";
+import { Sun, Moon, MonitorSmartphone, Palette } from "lucide-react";
 import { useEffect, useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-export default function ThemeToggle() {
+const options = [
+  { label: "Light", value: "light" as const, icon: Sun },
+  { label: "Dark", value: "dark" as const, icon: Moon },
+  { label: "System", value: "system" as const, icon: MonitorSmartphone },
+];
+
+type ThemeToggleProps = {
+  variant?: "default" | "compact";
+};
+
+export default function ThemeToggle({ variant = "default" }: ThemeToggleProps) {
   const { theme, systemTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
-  
   useEffect(() => setMounted(true), []);
   if (!mounted) return null;
 
   const effective = theme === "system" ? systemTheme : theme;
+  const current = options.find((o) => o.value === theme) ?? options[0];
 
-  function fadeTo(color: "light" | "dark") {
-    // Prevent multiple simultaneous animations
-    if (isAnimating) return;
-    setIsAnimating(true);
-
-    // Clean up any existing overlays
-    const existingOverlays = document.querySelectorAll('.theme-fade-overlay');
-    existingOverlays.forEach(overlay => overlay.remove());
-
-    // Overlay that will fade away
-    const overlay = document.createElement("div");
-    overlay.className = "theme-fade-overlay";
-    overlay.style.background = color === "dark" ? "#000" : "#fff";
-    document.body.appendChild(overlay);
-
-    // Fade out old content
-    const root = document.getElementById("app-fade-root");
-    if (root) root.classList.add("is-fading");
-
-    // Flip theme immediately
-    setTheme(color);
-
-    // Allow DOM paint, then fade in content + fade out overlay
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        if (root) root.classList.remove("is-fading");
-        overlay.style.opacity = "0";
-        setTimeout(() => {
-          overlay.remove();
-          setIsAnimating(false);
-        }, 1100); // match CSS duration
-      });
-    });
-  }
-
-  function handleClick() {
-    const next = (effective === "dark" ? "light" : "dark") as "light" | "dark";
-    fadeTo(next);
-  }
+  const triggerClasses =
+    variant === "compact"
+      ? "h-10 px-3 rounded-full"
+      : "w-full rounded-xl px-3 py-2";
 
   return (
-    <button
-      type="button"
-      aria-label="Toggle theme"
-      onClick={handleClick}
-      className="inline-flex h-9 items-center gap-2 rounded-full border border-neutral-200 bg-white px-3 text-sm text-neutral-700 shadow-sm transition hover:bg-neutral-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 dark:border-neutral-800 dark:bg-black dark:text-neutral-300 dark:hover:bg-neutral-900"
-    >
-      {effective === "dark" ? <Moon size={16} /> : <Sun size={16} />}
-      <span className="hidden sm:inline">{effective === "dark" ? "Dark" : "Light"}</span>
-    </button>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="outline"
+          className={cn(
+            "inline-flex items-center justify-between text-sm",
+            triggerClasses
+          )}
+        >
+          <span className="flex items-center gap-2">
+            {current.icon ? <current.icon className="h-4 w-4" /> : <Palette className="h-4 w-4" />}
+            {current.label}
+          </span>
+          <span className="text-xs text-muted-foreground">Change</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="w-48">
+        <DropdownMenuLabel className="flex items-center gap-2">
+          <Palette className="h-4 w-4" />
+          Theme
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        {options.map((opt) => (
+          <DropdownMenuItem
+            key={opt.value}
+            onClick={() => setTheme(opt.value)}
+            className="flex items-center gap-2"
+          >
+            <opt.icon className="h-4 w-4" />
+            <span className="flex-1">{opt.label}</span>
+            {effective === opt.value && <span className="text-xs text-primary">●</span>}
+            {opt.value === "system" && effective !== "light" && effective !== "dark" && (
+              <span className="text-xs text-primary">●</span>
+            )}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

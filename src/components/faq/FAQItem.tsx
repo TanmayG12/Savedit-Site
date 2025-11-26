@@ -1,6 +1,6 @@
 "use client";
 
-import type { FAQItem as FAQItemType } from "@/app/help/faqData";
+import type { FAQItem as FAQItemType } from "@/app/(marketing)/help/faqData";
 
 export type FAQItemProps = {
   item: FAQItemType;
@@ -25,9 +25,8 @@ export default function FAQItem({ item, isOpen, onToggle }: FAQItemProps) {
         <span className="leading-tight">{item.question}</span>
         <span
           aria-hidden
-          className={`flex h-8 w-8 items-center justify-center rounded-full border border-line/80 text-sm transition-transform duration-200 dark:border-line/50 ${
-            isOpen ? "bg-emerald-500/10 text-emerald-500 rotate-45 dark:bg-emerald-400/10 dark:text-emerald-300" : "text-text-dim"
-          }`}
+          className={`flex h-8 w-8 items-center justify-center rounded-full border border-line/80 text-sm transition-transform duration-200 dark:border-line/50 ${isOpen ? "bg-emerald-500/10 text-emerald-500 rotate-45 dark:bg-emerald-400/10 dark:text-emerald-300" : "text-text-dim"
+            }`}
         >
           +
         </span>
@@ -36,9 +35,8 @@ export default function FAQItem({ item, isOpen, onToggle }: FAQItemProps) {
         id={regionId}
         role="region"
         aria-labelledby={buttonId}
-        className={`grid transform-gpu transition-all duration-200 ease-out ${
-          isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-        }`}
+        className={`grid transform-gpu transition-all duration-200 ease-out ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+          }`}
       >
         <div className="overflow-hidden pb-4 text-sm leading-relaxed text-text-dim dark:text-text-dark/80">
           <p>{item.answer}</p>

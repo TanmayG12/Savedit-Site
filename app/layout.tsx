@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 import AppThemeProvider from "@/src/components/AppThemeProvider";
-import Header from "@/src/components/Header";
 import { baseMetadata, structuredData } from "@/lib/seo";
 
 export const metadata: Metadata = baseMetadata;
@@ -19,8 +19,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <AppThemeProvider>
           <div id="app-fade-root">
-            <Header />
             {children}
+            <Toaster />
           </div>
         </AppThemeProvider>
       </body>

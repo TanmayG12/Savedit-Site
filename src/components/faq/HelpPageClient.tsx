@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import type { FAQItem } from "@/app/help/faqData";
+import type { FAQItem } from "@/app/(marketing)/help/faqData";
 import HelpHero from "./HelpHero";
 import FAQ from "./FAQ";
 import { trackEvent } from "@/lib/analytics";
