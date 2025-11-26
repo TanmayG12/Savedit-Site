@@ -29,9 +29,9 @@ export default function LoginPage() {
         e.preventDefault()
         setLoading(true)
 
-        const supabase = createClient()
-
         try {
+            const supabase = createClient()
+            
             const { error } = await supabase.auth.signInWithPassword({
                 email,
                 password,
@@ -44,8 +44,14 @@ export default function LoginPage() {
 
             router.push('/dashboard')
             router.refresh()
-        } catch (error) {
-            toast.error('Something went wrong')
+        } catch (error: any) {
+            // Handle network errors or configuration issues
+            if (error?.message?.includes('fetch') || error?.name === 'TypeError') {
+                toast.error('Unable to connect. Please check your internet connection.')
+            } else {
+                toast.error('Something went wrong. Please try again.')
+            }
+            console.error('Login error:', error)
         } finally {
             setLoading(false)
         }
