@@ -114,7 +114,7 @@ export function SavedItemCard({ item: initialItem, onDelete, onUpdate }: {
     return (
         <>
         <Card
-            className="group flex h-full flex-col overflow-hidden border-border/70 bg-card/90 backdrop-blur-md transition-all hover:-translate-y-1 hover:border-primary/50 hover:shadow-2xl cursor-pointer"
+            className="group flex h-full flex-col overflow-hidden border-border/70 bg-card/90 backdrop-blur-md transition-all hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.4)] cursor-pointer"
             onClick={openDetailSheet}
             role="button"
             tabIndex={0}

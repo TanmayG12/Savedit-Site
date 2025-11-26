@@ -76,12 +76,12 @@ export default function CollectionDetailPage({ params }: { params: { id: string 
             }
             setCollection(mappedCollection)
 
-            // Fetch items in the collection via join table to respect RLS and shared access.
+            // Fetch items in the collection via join table.
+            // RLS on saved_items ensures we only see items we have access to.
             const { data: itemsData, error: itemsError } = await supabase
                 .from('collection_items')
-                .select('saved_item_id, saved_items(*)')
+                .select('saved_item_id, saved_items!inner(*)')
                 .eq('collection_id', params.id)
-                .eq('saved_items.user_id', session.user.id)
 
             if (itemsError) {
                 console.error('Error fetching collection items:', itemsError)

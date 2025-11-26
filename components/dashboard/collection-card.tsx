@@ -49,7 +49,7 @@ export function CollectionCard({ collection }: CollectionCardProps) {
         <Card
             className={cn(
                 "group relative overflow-hidden transition-all duration-200 cursor-pointer",
-                "hover:-translate-y-1 hover:shadow-xl",
+                "hover:-translate-y-1 hover:shadow-lg dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.4)]",
                 "border-border/50 bg-card"
             )}
             onClick={handleClick}
