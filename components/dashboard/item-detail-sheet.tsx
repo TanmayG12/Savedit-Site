@@ -111,18 +111,31 @@ export function ItemDetailSheet({
                 .map(t => t.trim())
                 .filter(t => t.length > 0)
 
+            const updateData: Record<string, unknown> = {
+                notes: notes.trim() || null,
+                tags: parsedTags.length > 0 ? parsedTags : [],
+            }
+            
+            // Only update title if it was changed
+            if (title.trim() !== item.title) {
+                updateData.title = title.trim() || null
+            }
+
             const { error } = await supabase
                 .from('saved_items')
-                .update({
-                    title: title.trim() || null,
-                    notes: notes.trim() || null,
-                    tags: parsedTags.length > 0 ? parsedTags : null,
-                })
+                .update(updateData)
                 .eq('id', item.id)
 
             if (error) {
-                toast.error('Failed to save changes')
-                console.error(error)
+                console.error('Update error:', error)
+                // Provide more specific error message
+                if (error.code === '42501') {
+                    toast.error('You do not have permission to edit this item')
+                } else if (error.message) {
+                    toast.error(`Failed to save: ${error.message}`)
+                } else {
+                    toast.error('Failed to save changes')
+                }
             } else {
                 toast.success('Changes saved')
                 setIsEditing(false)

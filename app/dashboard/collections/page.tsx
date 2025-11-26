@@ -3,7 +3,7 @@
 // Force dynamic rendering to avoid Supabase client initialization during build
 export const dynamic = 'force-dynamic'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase'
 import { CollectionCard } from '@/components/dashboard/collection-card'
 import { CreateCollectionDialog } from '@/components/dashboard/create-collection-dialog'
@@ -27,64 +27,64 @@ export default function CollectionsPage() {
     const [loading, setLoading] = useState(true)
     const router = useRouter()
 
-    useEffect(() => {
-        const fetchCollections = async () => {
-            const supabase = createClient()
-            const { data: { session } } = await supabase.auth.getSession()
-            if (!session) {
-                router.push('/login')
-                return
-            }
-
-            // Use the same RPC as mobile to include owned + shared collections.
-            const { data, error } = await supabase.rpc('list_accessible_collections_for_user', {
-                p_user_id: session.user.id,
-            })
-
-            if (error) {
-                console.error('Error fetching collections via RPC:', error)
-                toast.error('Could not load collections. Retrying with fallback.')
-                // Fallback: owned collections only
-                const { data: owned, error: ownedError } = await supabase
-                    .from('collections')
-                    .select('id, name, item_count, created_at, updated_at')
-                    .eq('owner_id', session.user.id)
-                    .order('updated_at', { ascending: false })
-
-                if (ownedError) {
-                    console.error('Error fetching owned collections:', ownedError)
-                } else {
-                    setCollections(
-                        (owned || []).map((c) => ({
-                            id: c.id,
-                            name: c.name,
-                            item_count: Number(c.item_count ?? 0),
-                            created_at: c.created_at ?? undefined,
-                            updated_at: c.updated_at ?? undefined,
-                        }))
-                    )
-                }
-                setLoading(false)
-                return
-            }
-
-            const mapped: Collection[] = (data || []).map((c: any) => ({
-                id: c.collection_id ?? c.id,
-                name: c.title ?? c.name ?? 'Untitled',
-                item_count: Number(c.item_count ?? 0),
-                created_at: c.created_at ?? undefined,
-                updated_at: c.updated_at ?? undefined,
-                role: c.role,
-                is_shared: c.is_shared,
-                sample_thumbnails: Array.isArray(c.sample_thumbnails) ? c.sample_thumbnails : c.samples ?? [],
-            }))
-
-            setCollections(mapped)
-            setLoading(false)
+    const fetchCollections = useCallback(async () => {
+        const supabase = createClient()
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session) {
+            router.push('/login')
+            return
         }
 
-        fetchCollections()
+        // Use the same RPC as mobile to include owned + shared collections.
+        const { data, error } = await supabase.rpc('list_accessible_collections_for_user', {
+            p_user_id: session.user.id,
+        })
+
+        if (error) {
+            console.error('Error fetching collections via RPC:', error)
+            toast.error('Could not load collections. Retrying with fallback.')
+            // Fallback: owned collections only
+            const { data: owned, error: ownedError } = await supabase
+                .from('collections')
+                .select('id, name, item_count, created_at, updated_at')
+                .eq('owner_id', session.user.id)
+                .order('updated_at', { ascending: false })
+
+            if (ownedError) {
+                console.error('Error fetching owned collections:', ownedError)
+            } else {
+                setCollections(
+                    (owned || []).map((c) => ({
+                        id: c.id,
+                        name: c.name,
+                        item_count: Number(c.item_count ?? 0),
+                        created_at: c.created_at ?? undefined,
+                        updated_at: c.updated_at ?? undefined,
+                    }))
+                )
+            }
+            setLoading(false)
+            return
+        }
+
+        const mapped: Collection[] = (data || []).map((c: any) => ({
+            id: c.collection_id ?? c.id,
+            name: c.title ?? c.name ?? 'Untitled',
+            item_count: Number(c.item_count ?? 0),
+            created_at: c.created_at ?? undefined,
+            updated_at: c.updated_at ?? undefined,
+            role: c.role,
+            is_shared: c.is_shared,
+            sample_thumbnails: Array.isArray(c.sample_thumbnails) ? c.sample_thumbnails : c.samples ?? [],
+        }))
+
+        setCollections(mapped)
+        setLoading(false)
     }, [router])
+
+    useEffect(() => {
+        fetchCollections()
+    }, [fetchCollections])
 
     if (loading) {
         return (
@@ -121,7 +121,11 @@ export default function CollectionsPage() {
             ) : (
                 <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
                     {collections.map((collection) => (
-                        <CollectionCard key={collection.id} collection={collection} />
+                        <CollectionCard 
+                            key={collection.id} 
+                            collection={collection} 
+                            onDeleted={fetchCollections}
+                        />
                     ))}
                 </div>
             )}
