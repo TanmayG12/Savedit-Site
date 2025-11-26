@@ -41,6 +41,7 @@ interface SavedItem {
     created_at?: string
     tags?: string[]
     notes?: string | null
+    description?: string | null
     provider?: string
     reminder?: any
 }
@@ -278,6 +279,13 @@ export function ItemDetailSheet({
                                 {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
                             </Button>
                         </div>
+
+                        {/* Description - auto-fetched from page metadata */}
+                        {item.description && (
+                            <p className="text-sm text-muted-foreground leading-relaxed">
+                                {item.description}
+                            </p>
+                        )}
 
                         <Separator />
 

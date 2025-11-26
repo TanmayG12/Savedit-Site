@@ -29,15 +29,26 @@ export default function DashboardPage() {
                 return
             }
 
+            // Fetch all items with descriptions
             const { data, error } = await supabase
                 .from('saved_items')
-                .select('*')
+                .select('*, collection_items(collection_id)')
                 .order('created_at', { ascending: false })
 
             if (error) {
                 console.error('Error fetching items:', error)
+                // Fallback without collection filter
+                const { data: fallbackData } = await supabase
+                    .from('saved_items')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                setItems(fallbackData || [])
             } else {
-                setItems(data || [])
+                // Filter out items that belong to any collection
+                const uncategorizedItems = (data || []).filter(
+                    (item: any) => !item.collection_items || item.collection_items.length === 0
+                )
+                setItems(uncategorizedItems)
             }
             setLoading(false)
         }

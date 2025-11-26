@@ -20,6 +20,7 @@ interface SavedItem {
     created_at?: string
     tags?: string[]
     notes?: string | null
+    description?: string | null
     provider?: string
     reminder?: any
     shared_with_count?: number

@@ -24,16 +24,15 @@ export default function RemindersPage() {
                 return
             }
 
-            // Fetch reminders from the 'reminders' table
+            // Fetch active/pending reminders from the 'reminders' table
             const { data, error } = await supabase
                 .from('reminders')
                 .select(`
-          *,
-          saved_items (
-            *
-          )
-        `)
+                    *,
+                    saved_items (*)
+                `)
                 .eq('user_id', session.user.id)
+                .in('status', ['pending', 'active'])
                 .order('fire_at_utc', { ascending: true })
 
             if (error) {

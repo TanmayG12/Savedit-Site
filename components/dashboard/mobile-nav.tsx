@@ -17,9 +17,9 @@ export function MobileNav() {
                     <span className="sr-only">Toggle Menu</span>
                 </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="pr-0">
-                <div className="px-7">
-                    <div className="mb-4 text-lg font-semibold tracking-tight">
+            <SheetContent side="left" className="w-[280px] p-0">
+                <div className="flex flex-col h-full py-6 px-4">
+                    <div className="mb-6 text-lg font-semibold tracking-tight">
                         Savedit
                     </div>
                     <NavLinks setOpen={setOpen} />
