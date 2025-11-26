@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useState, useMemo } from 'react'
-import { createClient } from '@/lib/supabase'
-
 // Force dynamic rendering to avoid Supabase client initialization during build
 export const dynamic = 'force-dynamic'
+
+import { useEffect, useState, useMemo } from 'react'
+import { createClient } from '@/lib/supabase'
 import { SavedItemCard } from '@/components/saved-item-card'
 import { useRouter } from 'next/navigation'
 import { Skeleton } from "@/components/ui/skeleton"
