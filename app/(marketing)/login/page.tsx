@@ -3,6 +3,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
+
+// Force dynamic rendering to avoid Supabase client initialization during build
+export const dynamic = 'force-dynamic'
 import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
 import { Button } from "@/components/ui/button"

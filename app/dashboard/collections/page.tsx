@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
+
+// Force dynamic rendering to avoid Supabase client initialization during build
+export const dynamic = 'force-dynamic'
 import { CollectionCard } from '@/components/dashboard/collection-card'
 import { CreateCollectionDialog } from '@/components/dashboard/create-collection-dialog'
 import { Skeleton } from "@/components/ui/skeleton"
