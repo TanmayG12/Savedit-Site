@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { SynthFallback } from "./synth-fallback"
 import { AddToCollectionDialog } from "@/components/dashboard/add-to-collection-dialog"
 import { CreateReminderDialog } from "@/components/dashboard/create-reminder-dialog"
+import { ItemDetailSheet } from "@/components/dashboard/item-detail-sheet"
 import { useState } from "react"
 import { createClient } from "@/lib/supabase"
 import { toast } from "sonner"
@@ -28,10 +29,16 @@ interface SavedItem {
     owner_username?: string | null
 }
 
-export function SavedItemCard({ item }: { item: SavedItem }) {
+export function SavedItemCard({ item: initialItem, onDelete, onUpdate }: { 
+    item: SavedItem
+    onDelete?: () => void
+    onUpdate?: (item: SavedItem) => void
+}) {
+    const [item, setItem] = useState(initialItem)
     const thumbnailUrl = item.thumbnail_mirrored_url || item.thumbnail_url
     const [showCollectionDialog, setShowCollectionDialog] = useState(false)
     const [showReminderDialog, setShowReminderDialog] = useState(false)
+    const [showDetailSheet, setShowDetailSheet] = useState(false)
     const supabase = createClient()
 
     const handleCompleteReminder = async () => {
@@ -81,21 +88,33 @@ export function SavedItemCard({ item }: { item: SavedItem }) {
 
     const providerLabel = item.provider || hostname
 
-    const openEditor = () => {
-        setShowCollectionDialog(true)
+    const openDetailSheet = () => {
+        setShowDetailSheet(true)
     }
 
     const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
         if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault()
-            openEditor()
+            openDetailSheet()
         }
     }
 
+    const handleItemUpdate = (updatedItem: SavedItem) => {
+        setItem(updatedItem)
+        onUpdate?.(updatedItem)
+    }
+
+    const handleItemDelete = () => {
+        onDelete?.()
+        // Refresh the page to remove the deleted item
+        window.location.reload()
+    }
+
     return (
+        <>
         <Card
             className="group flex h-full flex-col overflow-hidden border-border/70 bg-card/90 backdrop-blur-md transition-all hover:-translate-y-1 hover:border-primary/50 hover:shadow-2xl cursor-pointer"
-            onClick={openEditor}
+            onClick={openDetailSheet}
             role="button"
             tabIndex={0}
             onKeyDown={handleKeyPress}
@@ -245,20 +264,30 @@ export function SavedItemCard({ item }: { item: SavedItem }) {
                             <Bell className="h-3 w-3 sm:h-4 sm:w-4" />
                         </Button>
                     )}
-                    <AddToCollectionDialog
-                        itemId={item.id}
-                        renderTrigger={false}
-                        open={showCollectionDialog}
-                        onOpenChange={setShowCollectionDialog}
-                    />
-                    <CreateReminderDialog
-                        itemId={item.id}
-                        renderTrigger={false}
-                        open={showReminderDialog}
-                        onOpenChange={setShowReminderDialog}
-                    />
                 </CardFooter>
             </div>
         </Card>
+
+        <ItemDetailSheet
+            item={item}
+            open={showDetailSheet}
+            onOpenChange={setShowDetailSheet}
+            onDelete={handleItemDelete}
+            onUpdate={handleItemUpdate}
+        />
+
+        <AddToCollectionDialog
+            itemId={item.id}
+            renderTrigger={false}
+            open={showCollectionDialog}
+            onOpenChange={setShowCollectionDialog}
+        />
+        <CreateReminderDialog
+            itemId={item.id}
+            renderTrigger={false}
+            open={showReminderDialog}
+            onOpenChange={setShowReminderDialog}
+        />
+        </>
     )
 }
