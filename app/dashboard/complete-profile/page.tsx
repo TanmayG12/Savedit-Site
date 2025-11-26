@@ -89,10 +89,9 @@ export default function CompleteProfilePage() {
         const timer = setTimeout(async () => {
             try {
                 const supabase = createClient()
-                const { data: { user } } = await supabase.auth.getUser()
                 
                 const { data, error } = await supabase
-                    .rpc('is_username_available', { check_username: username.toLowerCase() })
+                    .rpc('is_username_available', { p_name: username.toLowerCase() })
 
                 if (error) {
                     console.error('Username check error:', error)
