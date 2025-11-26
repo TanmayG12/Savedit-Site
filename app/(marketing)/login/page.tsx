@@ -97,8 +97,8 @@ export default function LoginPage() {
             const { error } = await supabase.auth.signInWithOAuth({
                 provider,
                 options: {
-                    // OAuth users go to complete-profile first, which will redirect to dashboard if already complete
-                    redirectTo: `${window.location.origin}/dashboard/complete-profile`,
+                    // Use the callback route to properly exchange the code for a session
+                    redirectTo: `${window.location.origin}/auth/callback?next=/dashboard/complete-profile`,
                 },
             })
 
