@@ -29,9 +29,9 @@ export default function DashboardPage() {
                 return
             }
 
-            // Fetch all items with descriptions
+            // Fetch all items with descriptions from the active view
             const { data, error } = await supabase
-                .from('saved_items')
+                .from('saved_items_active')
                 .select('*, collection_items(collection_id)')
                 .order('created_at', { ascending: false })
 
@@ -39,7 +39,7 @@ export default function DashboardPage() {
                 console.error('Error fetching items:', error)
                 // Fallback without collection filter
                 const { data: fallbackData } = await supabase
-                    .from('saved_items')
+                    .from('saved_items_active')
                     .select('*')
                     .order('created_at', { ascending: false })
                 setItems(fallbackData || [])

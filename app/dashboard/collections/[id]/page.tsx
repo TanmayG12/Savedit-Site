@@ -27,6 +27,7 @@ type SavedItem = {
     created_at?: string
     tags?: string[]
     notes?: string | null
+    description?: string | null
     provider?: string
     reminder?: any
 }
@@ -80,14 +81,14 @@ export default function CollectionDetailPage({ params }: { params: { id: string 
             // RLS on saved_items ensures we only see items we have access to.
             const { data: itemsData, error: itemsError } = await supabase
                 .from('collection_items')
-                .select('saved_item_id, saved_items!inner(*)')
+                .select('saved_item_id, saved_items_active!inner(*)')
                 .eq('collection_id', params.id)
 
             if (itemsError) {
                 console.error('Error fetching collection items:', itemsError)
                 // Fallback: direct column if present
                 const { data: directItems, error: directError } = await supabase
-                    .from('saved_items')
+                    .from('saved_items_active')
                     .select('*')
                     .eq('collection_id', params.id)
                     .eq('user_id', session.user.id)
@@ -100,7 +101,7 @@ export default function CollectionDetailPage({ params }: { params: { id: string 
             } else {
                 const mappedItems =
                     itemsData
-                        ?.map((i: any) => i.saved_items)
+                        ?.map((i: any) => i.saved_items_active)
                         .filter(Boolean) as SavedItem[] ?? []
                 setItems(mappedItems)
             }
