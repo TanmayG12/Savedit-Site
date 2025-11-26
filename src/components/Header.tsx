@@ -76,7 +76,10 @@ export default function Header() {
 
           {/* Actions */}
           <div className="flex items-center gap-2">
-            <ThemeToggle variant="compact" />
+            {/* Desktop only: Theme toggle */}
+            <div className="hidden sm:block">
+              <ThemeToggle variant="compact" />
+            </div>
             
             {/* Desktop: Both buttons */}
             <div className="hidden sm:flex items-center gap-2">
@@ -116,21 +119,27 @@ export default function Header() {
               <NavLink href="/#get-app" onClick={() => setMobileMenuOpen(false)}>Get app</NavLink>
               <NavLink href="/help" onClick={() => setMobileMenuOpen(false)}>Help</NavLink>
             </nav>
-            <div className="mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-700 flex gap-2">
-              <Link
-                href="/ios"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex-1 inline-flex h-10 items-center justify-center rounded-full text-sm font-semibold bg-neutral-900 text-white dark:bg-white dark:text-black"
-              >
-                Get iOS
-              </Link>
-              <Link
-                href="/android"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex-1 inline-flex h-10 items-center justify-center rounded-full text-sm font-semibold bg-neutral-900 text-white dark:bg-white dark:text-black"
-              >
-                Get Android
-              </Link>
+            <div className="mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-700 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-neutral-600 dark:text-neutral-400">Theme</span>
+                <ThemeToggle variant="compact" />
+              </div>
+              <div className="flex gap-2">
+                <Link
+                  href="/ios"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex-1 inline-flex h-10 items-center justify-center rounded-full text-sm font-semibold bg-neutral-900 text-white dark:bg-white dark:text-black"
+                >
+                  Get iOS
+                </Link>
+                <Link
+                  href="/android"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex-1 inline-flex h-10 items-center justify-center rounded-full text-sm font-semibold bg-neutral-900 text-white dark:bg-white dark:text-black"
+                >
+                  Get Android
+                </Link>
+              </div>
             </div>
           </div>
         </div>

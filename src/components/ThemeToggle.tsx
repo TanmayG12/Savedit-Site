@@ -44,15 +44,12 @@ export default function ThemeToggle({ variant = "default" }: ThemeToggleProps) {
         <Button
           variant="outline"
           className={cn(
-            "inline-flex items-center justify-between text-sm",
+            "inline-flex items-center justify-center text-sm gap-2",
             triggerClasses
           )}
         >
-          <span className="flex items-center gap-2">
-            {current.icon ? <current.icon className="h-4 w-4" /> : <Palette className="h-4 w-4" />}
-            {current.label}
-          </span>
-          <span className="text-xs text-muted-foreground">Change</span>
+          {current.icon ? <current.icon className="h-4 w-4" /> : <Palette className="h-4 w-4" />}
+          <span className="hidden sm:inline">{current.label}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-48">
