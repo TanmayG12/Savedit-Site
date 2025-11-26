@@ -25,11 +25,11 @@ type Collection = {
 export default function CollectionsPage() {
     const [collections, setCollections] = useState<Collection[]>([])
     const [loading, setLoading] = useState(true)
-    const supabase = createClient()
     const router = useRouter()
 
     useEffect(() => {
         const fetchCollections = async () => {
+            const supabase = createClient()
             const { data: { session } } = await supabase.auth.getSession()
             if (!session) {
                 router.push('/login')
@@ -84,7 +84,7 @@ export default function CollectionsPage() {
         }
 
         fetchCollections()
-    }, [supabase, router])
+    }, [router])
 
     if (loading) {
         return (

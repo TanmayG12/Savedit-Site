@@ -18,10 +18,10 @@ export default function SettingsPage() {
     const [loading, setLoading] = useState(true)
     const [fullName, setFullName] = useState("")
     const [saving, setSaving] = useState(false)
-    const supabase = createClient()
 
     useEffect(() => {
         const getUser = async () => {
+            const supabase = createClient()
             const { data: { user } } = await supabase.auth.getUser()
             if (user) {
                 setUser(user)
@@ -30,10 +30,11 @@ export default function SettingsPage() {
             setLoading(false)
         }
         getUser()
-    }, [supabase])
+    }, [])
 
     const handleSave = async () => {
         setSaving(true)
+        const supabase = createClient()
         const { error } = await supabase.auth.updateUser({
             data: { full_name: fullName }
         })

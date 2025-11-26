@@ -13,11 +13,11 @@ import { Bell } from "lucide-react"
 export default function RemindersPage() {
     const [items, setItems] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
-    const supabase = createClient()
     const router = useRouter()
 
     useEffect(() => {
         const fetchReminders = async () => {
+            const supabase = createClient()
             const { data: { session } } = await supabase.auth.getSession()
             if (!session) {
                 router.push('/login')
@@ -51,7 +51,7 @@ export default function RemindersPage() {
         }
 
         fetchReminders()
-    }, [supabase, router])
+    }, [router])
 
     if (loading) {
         return (

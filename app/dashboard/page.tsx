@@ -17,11 +17,11 @@ export default function DashboardPage() {
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
     const [sort, setSort] = useState('newest')
 
-    const supabase = createClient()
     const router = useRouter()
 
     useEffect(() => {
         const fetchItems = async () => {
+            const supabase = createClient()
             const { data: { session } } = await supabase.auth.getSession()
 
             if (!session) {
@@ -43,7 +43,7 @@ export default function DashboardPage() {
         }
 
         fetchItems()
-    }, [supabase, router])
+    }, [router])
 
     const filteredItems = useMemo(() => {
         let result = [...items]
