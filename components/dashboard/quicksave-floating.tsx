@@ -9,9 +9,6 @@ import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { Loader2, Plus, X } from "lucide-react"
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-
 export function QuickSaveFloating() {
     const [open, setOpen] = useState(false)
     const [url, setUrl] = useState("")
@@ -38,13 +35,22 @@ export function QuickSaveFloating() {
                 return
             }
 
+            // Get env vars at runtime
+            const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+            const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+            
+            if (!supabaseUrl || !supabaseAnonKey) {
+                toast.error("Configuration error. Please try again later.")
+                return
+            }
+
             // Call the quick-save Edge Function (same pipeline as mobile app)
-            const response = await fetch(`${SUPABASE_URL}/functions/v1/quick-save`, {
+            const response = await fetch(`${supabaseUrl}/functions/v1/quick-save`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${session.access_token}`,
-                    'apikey': SUPABASE_ANON_KEY,
+                    'apikey': supabaseAnonKey,
                 },
                 body: JSON.stringify({
                     url: trimmedUrl,

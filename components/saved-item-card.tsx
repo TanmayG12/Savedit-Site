@@ -106,7 +106,7 @@ export function SavedItemCard({ item }: { item: SavedItem }) {
             }}
         >
             {/* Media with platform pill */}
-            <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted/40">
+            <div className="relative aspect-square sm:aspect-[16/10] w-full overflow-hidden bg-muted/40">
                 {thumbnailUrl && typeof thumbnailUrl === 'string' ? (
                     <img
                         src={thumbnailUrl}
@@ -128,21 +128,21 @@ export function SavedItemCard({ item }: { item: SavedItem }) {
                 </div>
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-black/10 to-transparent dark:from-background/70 dark:via-background/30" />
 
-                <div className="absolute top-3 left-3 right-3 flex items-start justify-between gap-2">
+                <div className="absolute top-2 left-2 right-2 sm:top-3 sm:left-3 sm:right-3 flex items-start justify-between gap-1 sm:gap-2">
                     <Badge
                         variant="outline"
-                        className="flex h-7 items-center gap-1.5 rounded-full bg-background/85 backdrop-blur px-2.5 text-[10px] font-semibold uppercase tracking-wide border-border/60"
+                        className="flex h-6 sm:h-7 items-center gap-1 sm:gap-1.5 rounded-full bg-background/85 backdrop-blur px-2 sm:px-2.5 text-[9px] sm:text-[10px] font-semibold uppercase tracking-wide border-border/60"
                     >
                         <img
                             src={faviconUrl}
                             alt=""
-                            className="h-3.5 w-3.5 rounded-full"
+                            className="h-3 w-3 sm:h-3.5 sm:w-3.5 rounded-full"
                             onError={(e) => e.currentTarget.style.display = 'none'}
                         />
-                        <span className="truncate">{providerLabel}</span>
+                        <span className="truncate max-w-[60px] sm:max-w-none">{providerLabel}</span>
                     </Badge>
                     {item.reminder && (
-                        <Badge variant="secondary" className="flex h-8 items-center gap-1 rounded-full bg-amber-500/90 text-amber-950 px-3 text-[11px] font-semibold">
+                        <Badge variant="secondary" className="hidden sm:flex h-8 items-center gap-1 rounded-full bg-amber-500/90 text-amber-950 px-3 text-[11px] font-semibold">
                             <Bell className="h-3.5 w-3.5" />
                             {reminderLabel}
                         </Badge>
@@ -151,27 +151,27 @@ export function SavedItemCard({ item }: { item: SavedItem }) {
             </div>
 
             <div className="flex flex-col flex-grow">
-                <CardContent className="px-4 py-3 space-y-3 flex-grow">
-                    <div className="flex flex-col gap-1">
-                        <p className="text-base font-semibold text-foreground leading-snug line-clamp-2">
+                <CardContent className="px-2 py-2 sm:px-4 sm:py-3 space-y-1 sm:space-y-3 flex-grow">
+                    <div className="flex flex-col gap-0.5 sm:gap-1">
+                        <p className="text-xs sm:text-base font-semibold text-foreground leading-snug line-clamp-2">
                             {item.title || 'Untitled'}
                         </p>
                         {item.owner_display_name && (
-                            <p className="text-xs text-muted-foreground truncate">
+                            <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
                                 by {item.owner_display_name}
                             </p>
                         )}
                     </div>
 
                     {sharedLabel && (
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <div className="hidden sm:flex items-center gap-2 text-xs text-muted-foreground">
                             <span className="h-2 w-2 rounded-full bg-primary/70" />
                             <span className="truncate">{sharedLabel}</span>
                         </div>
                     )}
 
                     {item.tags && item.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-2">
+                        <div className="hidden sm:flex flex-wrap gap-2">
                             {item.tags.slice(0, 3).map((tag, idx) => (
                                 <Badge key={idx} variant="secondary" className="text-[11px] px-2.5 py-1 rounded-full bg-secondary/70">
                                     {tag}
@@ -186,62 +186,63 @@ export function SavedItemCard({ item }: { item: SavedItem }) {
                     )}
 
                     {item.notes && (
-                        <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+                        <p className="hidden sm:block text-sm text-muted-foreground line-clamp-3 leading-relaxed">
                             {item.notes}
                         </p>
                     )}
                 </CardContent>
 
-                <CardFooter className="p-4 pt-0 mt-auto flex items-center gap-2">
+                <CardFooter className="p-2 sm:p-4 pt-0 mt-auto flex items-center gap-1 sm:gap-2">
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="flex-1 h-9 text-sm justify-center rounded-full border border-border/60 bg-background/70 backdrop-blur transition-colors hover:bg-primary hover:text-primary-foreground"
+                        className="flex-1 h-7 sm:h-9 text-xs sm:text-sm justify-center rounded-full border border-border/60 bg-background/70 backdrop-blur transition-colors hover:bg-primary hover:text-primary-foreground"
                         asChild
                         onClick={(e) => e.stopPropagation()}
                     >
                         <a href={item.url} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="mr-2 h-4 w-4" /> Open
+                            <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-2" />
+                            <span className="hidden sm:inline">Open</span>
                         </a>
                     </Button>
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-9 w-9 rounded-full border border-border/60 bg-background/70 backdrop-blur"
+                        className="h-7 w-7 sm:h-9 sm:w-9 rounded-full border border-border/60 bg-background/70 backdrop-blur"
                         onClick={(e) => {
                             e.stopPropagation()
                             setShowCollectionDialog(true)
                         }}
                         aria-label="Add to Collection"
                     >
-                        <FolderPlus className="h-4 w-4" />
+                        <FolderPlus className="h-3 w-3 sm:h-4 sm:w-4" />
                     </Button>
                     {item.reminder ? (
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="h-9 w-9 rounded-full border border-emerald-500/50 text-emerald-500 hover:bg-emerald-500 hover:text-white"
+                            className="h-7 w-7 sm:h-9 sm:w-9 rounded-full border border-emerald-500/50 text-emerald-500 hover:bg-emerald-500 hover:text-white"
                             onClick={(e) => {
                                 e.stopPropagation()
                                 handleCompleteReminder()
                             }}
                             title="Complete Reminder"
                         >
-                            <Check className="h-4 w-4" />
+                            <Check className="h-3 w-3 sm:h-4 sm:w-4" />
                             <span className="sr-only">Complete Reminder</span>
                         </Button>
                     ) : (
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="h-9 w-9 rounded-full border border-border/60 bg-background/70 backdrop-blur"
+                            className="h-7 w-7 sm:h-9 sm:w-9 rounded-full border border-border/60 bg-background/70 backdrop-blur"
                             onClick={(e) => {
                                 e.stopPropagation()
                                 setShowReminderDialog(true)
                             }}
                             aria-label="Set Reminder"
                         >
-                            <Bell className="h-4 w-4" />
+                            <Bell className="h-3 w-3 sm:h-4 sm:w-4" />
                         </Button>
                     )}
                     <AddToCollectionDialog

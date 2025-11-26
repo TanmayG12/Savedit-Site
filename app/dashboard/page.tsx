@@ -120,7 +120,7 @@ export default function DashboardPage() {
                 </div>
             ) : (
                 <div className={viewMode === 'grid'
-                    ? "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 auto-rows-fr"
+                    ? "grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4 auto-rows-fr"
                     : "flex flex-col gap-4"
                 }>
                     {filteredItems.map((item) => (

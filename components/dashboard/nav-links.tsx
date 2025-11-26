@@ -4,7 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
-import { Home, Bell } from "lucide-react"
+import { Home, Bell, FolderOpen } from "lucide-react"
 
 interface NavProps extends React.HTMLAttributes<HTMLElement> {
     setOpen?: (open: boolean) => void
@@ -19,6 +19,12 @@ export function NavLinks({ className, setOpen, ...props }: NavProps) {
             label: "Home",
             icon: Home,
             active: pathname === "/dashboard",
+        },
+        {
+            href: "/dashboard/collections",
+            label: "Collections",
+            icon: FolderOpen,
+            active: pathname?.startsWith("/dashboard/collections"),
         },
         {
             href: "/dashboard/reminders",
