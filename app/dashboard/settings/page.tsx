@@ -88,6 +88,23 @@ export default function SettingsPage() {
         }
     }
 
+    const handleDisconnectGoogleCalendar = async () => {
+        const supabase = createClient()
+        if (!user) return
+
+        const { error } = await supabase
+            .from('profiles')
+            .update({ google_calendar_enabled: false })
+            .eq('user_id', user.id)
+
+        if (error) {
+            toast.error("Failed to disconnect Google Calendar")
+        } else {
+            setGoogleCalendarEnabled(false)
+            toast.success("Google Calendar disconnected")
+        }
+    }
+
     if (loading) {
         return <Skeleton className="h-[400px] w-full max-w-2xl" />
     }
@@ -150,11 +167,10 @@ export default function SettingsPage() {
                             </div>
                         </div>
                         <Button
-                            variant={googleCalendarEnabled ? "outline" : "default"}
-                            onClick={handleConnectGoogleCalendar}
-                            disabled={googleCalendarEnabled}
+                            variant={googleCalendarEnabled ? "destructive" : "default"}
+                            onClick={googleCalendarEnabled ? handleDisconnectGoogleCalendar : handleConnectGoogleCalendar}
                         >
-                            {googleCalendarEnabled ? "Connected" : "Connect"}
+                            {googleCalendarEnabled ? "Disconnect" : "Connect"}
                         </Button>
                     </div>
                 </CardContent>
