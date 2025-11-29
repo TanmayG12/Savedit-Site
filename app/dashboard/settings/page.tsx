@@ -29,11 +29,15 @@ export default function SettingsPage() {
                 setUser(user)
                 setFullName(user.user_metadata?.full_name || "")
 
-                const { data: profile } = await supabase
+                const { data: profile, error: profileError } = await supabase
                     .from('profiles')
                     .select('google_calendar_enabled')
                     .eq('user_id', user.id)
                     .single()
+
+                if (profileError) {
+                    // console.error('Profile fetch error:', profileError)
+                }
                 if (profile?.google_calendar_enabled) {
                     setGoogleCalendarEnabled(true)
                 }
@@ -41,6 +45,9 @@ export default function SettingsPage() {
             setLoading(false)
         }
         getUser()
+
+        // Log URL params for debugging
+        // console.log('Settings page loaded, URL params:', window.location.search)
     }, [])
 
     const handleSave = async () => {
@@ -59,11 +66,15 @@ export default function SettingsPage() {
     }
 
     const handleConnectGoogleCalendar = async () => {
+        // console.log('Starting Google Calendar OAuth flow...')
         const supabase = createClient()
+        const redirectUrl = `${window.location.origin}/auth/callback?next=/dashboard/settings&flow=connect_calendar`
+        // console.log('Redirect URL:', redirectUrl)
+
         const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: `${window.location.origin}/auth/callback?next=/dashboard/settings&flow=connect_calendar`,
+                redirectTo: redirectUrl,
                 scopes: 'https://www.googleapis.com/auth/calendar',
                 queryParams: {
                     access_type: 'offline',
@@ -71,7 +82,10 @@ export default function SettingsPage() {
                 },
             },
         })
-        if (error) toast.error(error.message)
+        if (error) {
+            // console.error('OAuth error:', error)
+            toast.error(error.message)
+        }
     }
 
     if (loading) {
