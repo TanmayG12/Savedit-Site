@@ -29,7 +29,7 @@ export default function RemindersPage() {
                 .from('reminders')
                 .select(`
                     *,
-                    saved_items_active (*)
+                    saved_item:saved_items (*)
                 `)
                 .eq('user_id', session.user.id)
                 .in('status', ['pending', 'active'])
@@ -39,10 +39,17 @@ export default function RemindersPage() {
                 console.error('Error fetching reminders:', error)
             } else {
                 // Map reminders to saved items structure for the card
-                const mappedItems = data?.map((r: any) => ({
-                    ...r.saved_items_active,
-                    reminder: r
-                })).filter((i: any) => i.id) || [] // Filter out null saved_items
+                const mappedItems = data?.map((r: any) => {
+                    const item = r.saved_item
+                    if (!item || item.is_archived || item.deleted_at) return null
+
+                    return {
+                        ...item,
+                        title: item.display_title,
+                        description: item.save_details,
+                        reminder: r
+                    }
+                }).filter((i: any) => i && i.id) || []
                 setItems(mappedItems)
             }
             setLoading(false)

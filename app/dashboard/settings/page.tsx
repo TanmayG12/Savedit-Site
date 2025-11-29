@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Skeleton } from "@/components/ui/skeleton"
+import { CalendarIcon } from "lucide-react"
 import { toast } from "sonner"
 
 export default function SettingsPage() {
@@ -18,6 +19,7 @@ export default function SettingsPage() {
     const [loading, setLoading] = useState(true)
     const [fullName, setFullName] = useState("")
     const [saving, setSaving] = useState(false)
+    const [googleCalendarEnabled, setGoogleCalendarEnabled] = useState(false)
 
     useEffect(() => {
         const getUser = async () => {
@@ -26,6 +28,15 @@ export default function SettingsPage() {
             if (user) {
                 setUser(user)
                 setFullName(user.user_metadata?.full_name || "")
+
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('google_calendar_enabled')
+                    .eq('user_id', user.id)
+                    .single()
+                if (profile?.google_calendar_enabled) {
+                    setGoogleCalendarEnabled(true)
+                }
             }
             setLoading(false)
         }
@@ -45,6 +56,22 @@ export default function SettingsPage() {
             toast.success("Profile updated")
         }
         setSaving(false)
+    }
+
+    const handleConnectGoogleCalendar = async () => {
+        const supabase = createClient()
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: `${window.location.origin}/auth/callback?next=/dashboard/settings&flow=connect_calendar`,
+                scopes: 'https://www.googleapis.com/auth/calendar',
+                queryParams: {
+                    access_type: 'offline',
+                    prompt: 'consent',
+                },
+            },
+        })
+        if (error) toast.error(error.message)
     }
 
     if (loading) {
@@ -88,6 +115,35 @@ export default function SettingsPage() {
                         {saving ? "Saving..." : "Save Changes"}
                     </Button>
                 </CardFooter>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Integrations</CardTitle>
+                    <CardDescription>
+                        Connect third-party services to Savedit.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                <CalendarIcon className="h-5 w-5 text-blue-600" />
+                            </div>
+                            <div>
+                                <p className="font-medium">Google Calendar</p>
+                                <p className="text-sm text-muted-foreground">Add reminders to your calendar</p>
+                            </div>
+                        </div>
+                        <Button
+                            variant={googleCalendarEnabled ? "outline" : "default"}
+                            onClick={handleConnectGoogleCalendar}
+                            disabled={googleCalendarEnabled}
+                        >
+                            {googleCalendarEnabled ? "Connected" : "Connect"}
+                        </Button>
+                    </div>
+                </CardContent>
             </Card>
         </div>
     )

@@ -1,5 +1,5 @@
-'use client'
-
+import { Switch } from "@/components/ui/switch"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useState } from "react"
 import { createClient } from "@/lib/supabase"
 import { toast } from "sonner"
 import { CalendarIcon } from "lucide-react"
@@ -46,7 +45,30 @@ export function CreateReminderDialog({
 
     const [date, setDate] = useState<Date>()
     const [loading, setLoading] = useState(false)
+    const [addToGoogleCalendar, setAddToGoogleCalendar] = useState(false)
+    const [googleCalendarEnabled, setGoogleCalendarEnabled] = useState(false)
     const supabase = createClient()
+
+    useEffect(() => {
+        if (open) {
+            const checkProfile = async () => {
+                const { data: { user } } = await supabase.auth.getUser()
+                if (user) {
+                    const { data: profile } = await supabase
+                        .from('profiles')
+                        .select('google_calendar_enabled')
+                        .eq('user_id', user.id)
+                        .single()
+
+                    if (profile?.google_calendar_enabled) {
+                        setGoogleCalendarEnabled(true)
+                        setAddToGoogleCalendar(true)
+                    }
+                }
+            }
+            checkProfile()
+        }
+    }, [open])
 
     const handleCreate = async () => {
         if (!date) {
@@ -56,12 +78,16 @@ export function CreateReminderDialog({
 
         setLoading(true)
 
+        const { data: { session } } = await supabase.auth.getSession()
+
         // Try calling the Edge Function first
         const { error: funcError } = await supabase.functions.invoke('create_reminder', {
             body: {
                 savedItemId: itemId,
                 fireAt: date.toISOString(),
-                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                addToGoogleCalendar,
+                googleAccessToken: session?.provider_token
             }
         })
 
@@ -134,6 +160,20 @@ export function CreateReminderDialog({
                             </PopoverContent>
                         </Popover>
                     </div>
+
+                    {googleCalendarEnabled && (
+                        <div className="flex items-center justify-between space-x-2">
+                            <Label htmlFor="google-calendar" className="flex flex-col space-y-1">
+                                <span>Add to Google Calendar</span>
+                                <span className="font-normal text-xs text-muted-foreground">Automatically create an event</span>
+                            </Label>
+                            <Switch
+                                id="google-calendar"
+                                checked={addToGoogleCalendar}
+                                onCheckedChange={setAddToGoogleCalendar}
+                            />
+                        </div>
+                    )}
                 </div>
                 <DialogFooter>
                     <Button onClick={handleCreate} disabled={loading}>

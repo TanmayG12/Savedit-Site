@@ -81,28 +81,26 @@ export default function CollectionDetailPage({ params }: { params: { id: string 
             // RLS on saved_items ensures we only see items we have access to.
             const { data: itemsData, error: itemsError } = await supabase
                 .from('collection_items')
-                .select('saved_item_id, saved_items_active!inner(*)')
+                .select('saved_item_id, saved_item:saved_items!inner(*)')
                 .eq('collection_id', params.id)
 
             if (itemsError) {
                 console.error('Error fetching collection items:', itemsError)
-                // Fallback: direct column if present
-                const { data: directItems, error: directError } = await supabase
-                    .from('saved_items_active')
-                    .select('*')
-                    .eq('collection_id', params.id)
-                    .eq('user_id', session.user.id)
-
-                if (directError) {
-                    toast.error('Could not load items for this collection')
-                } else {
-                    setItems((directItems as SavedItem[]) || [])
-                }
+                toast.error('Could not load items for this collection')
+                setItems([])
             } else {
-                const mappedItems =
-                    itemsData
-                        ?.map((i: any) => i.saved_items_active)
-                        .filter(Boolean) as SavedItem[] ?? []
+                const mappedItems = itemsData
+                    ?.map((i: any) => {
+                        const item = i.saved_item
+                        if (!item || item.is_archived || item.deleted_at) return null
+
+                        return {
+                            ...item,
+                            title: item.display_title,
+                            description: item.save_details
+                        }
+                    })
+                    .filter(Boolean) as SavedItem[] ?? []
                 setItems(mappedItems)
             }
 

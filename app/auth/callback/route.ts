@@ -5,8 +5,8 @@ import { NextResponse } from 'next/server'
 export async function GET(request: Request) {
     const { searchParams, origin } = new URL(request.url)
     const code = searchParams.get('code')
-    // If "next" param exists, use it as the redirect destination
     const next = searchParams.get('next') ?? '/dashboard/complete-profile'
+    const flow = searchParams.get('flow')
 
     if (code) {
         const cookieStore = cookies()
@@ -33,9 +33,12 @@ export async function GET(request: Request) {
             }
         )
 
-        const { error } = await supabase.auth.exchangeCodeForSession(code)
-        
+        const { error, data: { user } } = await supabase.auth.exchangeCodeForSession(code)
+
         if (!error) {
+            if (flow === 'connect_calendar' && user) {
+                await supabase.from('profiles').update({ google_calendar_enabled: true }).eq('user_id', user.id)
+            }
             return NextResponse.redirect(`${origin}${next}`)
         }
     }
