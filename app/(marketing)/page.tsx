@@ -4,6 +4,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Container } from "@/src/components/ui/Container";
 import { Pill } from "@/src/components/ui/Pill";
@@ -15,6 +16,28 @@ import { Divider } from "@/src/components/ui/Divider";
 
 // ---- Page ----
 export default function HomePage() {
+  const router = useRouter();
+  
+  // Handle Supabase auth errors that come back in hash fragment
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash) {
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const error = hashParams.get('error');
+      const errorCode = hashParams.get('error_code');
+      const errorDescription = hashParams.get('error_description');
+      
+      if (error || errorCode) {
+        // Redirect to login with error params as query string
+        const loginUrl = new URL('/login', window.location.origin);
+        if (error) loginUrl.searchParams.set('error', error);
+        if (errorCode) loginUrl.searchParams.set('error_code', errorCode);
+        if (errorDescription) loginUrl.searchParams.set('error_description', errorDescription);
+        
+        router.replace(loginUrl.pathname + loginUrl.search);
+      }
+    }
+  }, [router]);
+  
   return (
     <main>
       {/* Smooth anchor jump offset handled in globals.css (scroll-margin-top). */}

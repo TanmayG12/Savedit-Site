@@ -23,6 +23,7 @@ function LoginContent() {
         const modeParam = searchParams.get('mode')
         if (modeParam === 'register') return 'register'
         if (modeParam === 'forgot') return 'forgot-password'
+        if (modeParam === 'reset-password') return 'reset-password'
         return 'login'
     }
     
@@ -106,6 +107,36 @@ function LoginContent() {
             mounted = false
         }
     }, [])
+
+    // Check for error params (from failed auth redirects) - both query and hash
+    useEffect(() => {
+        // Check query params first
+        let error = searchParams.get('error')
+        let errorDescription = searchParams.get('error_description')
+        
+        // Also check hash fragment (Supabase sends errors in hash)
+        if (!error && typeof window !== 'undefined' && window.location.hash) {
+            const hashParams = new URLSearchParams(window.location.hash.substring(1))
+            error = hashParams.get('error')
+            errorDescription = hashParams.get('error_description')
+            
+            // Clear the hash to avoid showing the error again on refresh
+            if (error) {
+                window.history.replaceState(null, '', window.location.pathname + window.location.search)
+            }
+        }
+        
+        if (error) {
+            if (error === 'access_denied' || errorDescription?.includes('expired')) {
+                toast.error('The link has expired. Please request a new one.')
+                setMode('forgot-password')
+            } else if (errorDescription) {
+                toast.error(decodeURIComponent(errorDescription.replace(/\+/g, ' ')))
+            } else {
+                toast.error('Something went wrong. Please try again.')
+            }
+        }
+    }, [searchParams])
 
     // Update mode when URL params change (only on initial load or URL change)
     useEffect(() => {
@@ -210,8 +241,11 @@ function LoginContent() {
 
         try {
             const supabase = createClient()
+            // Note: The actual redirect is controlled by Supabase email template settings
+            // In Supabase Dashboard > Auth > Email Templates > Reset Password:
+            // Use: {{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery
             const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `${window.location.origin}/login`,
+                redirectTo: `${window.location.origin}/auth/reset-password`,
             })
 
             if (error) {

@@ -43,6 +43,17 @@ export async function middleware(request: NextRequest) {
         data: { user },
     } = await supabase.auth.getUser()
 
+    // Check for error params in URL (from Supabase auth redirects)
+    const errorParam = request.nextUrl.searchParams.get('error')
+    const errorCode = request.nextUrl.searchParams.get('error_code')
+    
+    // If there's an auth error, redirect to login page with error params preserved
+    if (errorParam || errorCode) {
+        const loginUrl = new URL('/login', request.url)
+        loginUrl.search = request.nextUrl.search
+        return NextResponse.redirect(loginUrl)
+    }
+
     if (user && request.nextUrl.pathname === '/login') {
         return NextResponse.redirect(new URL('/dashboard', request.url))
     }

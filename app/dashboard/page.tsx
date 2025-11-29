@@ -19,6 +19,27 @@ export default function DashboardPage() {
 
     const router = useRouter()
 
+    // Handle Supabase auth errors that come back in hash fragment
+    useEffect(() => {
+        if (typeof window !== 'undefined' && window.location.hash) {
+            const hashParams = new URLSearchParams(window.location.hash.substring(1));
+            const error = hashParams.get('error');
+            const errorCode = hashParams.get('error_code');
+            const errorDescription = hashParams.get('error_description');
+            
+            if (error || errorCode) {
+                // Redirect to login with error params as query string
+                const loginUrl = new URL('/login', window.location.origin);
+                if (error) loginUrl.searchParams.set('error', error);
+                if (errorCode) loginUrl.searchParams.set('error_code', errorCode);
+                if (errorDescription) loginUrl.searchParams.set('error_description', errorDescription);
+                
+                router.replace(loginUrl.pathname + loginUrl.search);
+                return;
+            }
+        }
+    }, [router]);
+
     useEffect(() => {
         const fetchItems = async () => {
             const supabase = createClient()
