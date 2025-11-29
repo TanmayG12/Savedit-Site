@@ -37,7 +37,17 @@ export async function GET(request: Request) {
 
         if (!error) {
             if (flow === 'connect_calendar' && user) {
-                await supabase.from('profiles').update({ google_calendar_enabled: true }).eq('user_id', user.id)
+                console.log('Updating google_calendar_enabled for user:', user.id)
+                const { error: updateError } = await supabase
+                    .from('profiles')
+                    .update({ google_calendar_enabled: true })
+                    .eq('user_id', user.id)
+
+                if (updateError) {
+                    console.error('Failed to update profile:', updateError)
+                } else {
+                    console.log('Successfully updated google_calendar_enabled')
+                }
             }
             return NextResponse.redirect(`${origin}${next}`)
         }
